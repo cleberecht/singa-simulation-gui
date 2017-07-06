@@ -41,11 +41,11 @@ public class IconProvider {
     public static final Image DIFFUSION_ICON_IMAGE = new Image(getResourceAsStream(DIFFUSION_ICON_NAME));
 
     private static InputStream getResourceAsStream(String resource) {
-        return de.bioforscher.singa.simulation.application.IconProvider.class.getResourceAsStream(resource);
+        return IconProvider.class.getResourceAsStream(resource);
     }
 
     private static String getResourceAsString(String resource) {
-        return de.bioforscher.singa.simulation.application.IconProvider.class.getResource(resource).getPath();
+        return IconProvider.class.getResource(resource).getPath();
     }
 
     public static class FontAwesome {
@@ -79,7 +79,7 @@ public class IconProvider {
 
         public static Label createIconLabel(String iconName, int iconSize) {
             Label icon = new Label(iconName);
-            icon.setFont(de.bioforscher.singa.simulation.application.IconProvider.FONT_AWESOME_SMALL);
+            icon.setFont(IconProvider.FONT_AWESOME_SMALL);
             return icon;
         }
     }

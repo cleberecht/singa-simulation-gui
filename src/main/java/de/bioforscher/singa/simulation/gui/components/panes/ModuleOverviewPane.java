@@ -4,12 +4,12 @@ import de.bioforscher.singa.chemistry.descriptive.features.diffusivity.Diffusivi
 import de.bioforscher.singa.features.quantities.MolarConcentration;
 import de.bioforscher.singa.mathematics.metrics.model.VectorMetricProvider;
 import de.bioforscher.singa.mathematics.vectors.Vector2D;
+import de.bioforscher.singa.simulation.gui.AvailableModules;
 import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
 import de.bioforscher.singa.simulation.gui.components.cells.ModuleCell;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.EnvironmentalParameterControlPanel;
 import de.bioforscher.singa.simulation.gui.components.plots.SimulationRobustnessPlot;
 import de.bioforscher.singa.simulation.modules.diffusion.DiffusionUtilities;
-import de.bioforscher.singa.simulation.modules.model.AvailableModules;
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -110,11 +110,11 @@ public class ModuleOverviewPane extends SplitPane {
         this.maximalDifference = this.owner.getGraph().getSteepestDifference(
                 this.owner.getSimulation().getFreeDiffusionModule().getEntityWithMaximalDiffusivity());
         this.environmentalControl.getMaximalDegreeProperty()
-                                 .setValue(String.valueOf(this.maximalDegree));
+                .setValue(String.valueOf(this.maximalDegree));
         this.environmentalControl.getMaximalDiffusivityProperty().setValue(formatter.format(this.maximalDiffusivity
                 .getValue()));
         this.environmentalControl.getMaximalConcentrationDiffenceProperty().setValue(this.maximalDifference.getValue()
-                                                                                                           .toString());
+                .toString());
         this.numberOfNodes = this.owner.getGraph().getNodes().size();
     }
 
@@ -251,11 +251,11 @@ public class ModuleOverviewPane extends SplitPane {
             }
 
         };
-        StringConverter<Number> accuracyConverter =new StringConverter<Number>() {
+        StringConverter<Number> accuracyConverter = new StringConverter<Number>() {
 
             @Override
             public String toString(Number n) {
-                if (n.doubleValue() <= 9 ) return "very precise";
+                if (n.doubleValue() <= 9) return "very precise";
                 if (n.doubleValue() <= 12.0) return "precise";
                 if (n.doubleValue() <= 14.0) return "diverging";
                 return "very diverging";

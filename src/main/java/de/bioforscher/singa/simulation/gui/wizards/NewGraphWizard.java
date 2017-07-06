@@ -7,8 +7,6 @@ import de.bioforscher.singa.features.units.UnitPrefix;
 import de.bioforscher.singa.features.units.UnitPrefixes;
 import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
 import de.bioforscher.singa.mathematics.graphs.util.GraphFactory;
-import de.bioforscher.singa.simulation.application.wizards.Wizard;
-import de.bioforscher.singa.simulation.application.wizards.WizardPage;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraphs;
 import javafx.beans.value.ObservableValue;
@@ -183,7 +181,7 @@ class GraphConfigurationPage extends WizardPage {
 
     @Override
     public void navigateToNextPage() {
-        ((de.bioforscher.singa.simulation.application.wizards.NewGraphWizard) getWizard()).setGraph(createGraph());
+        ((NewGraphWizard) getWizard()).setGraph(createGraph());
         super.navigateToNextPage();
     }
 }

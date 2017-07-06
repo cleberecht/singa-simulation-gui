@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  */
 public class PlotControlPanel extends GridPane {
 
-    private static final Logger logger = LoggerFactory.getLogger(de.bioforscher.singa.simulation.application.components.controlpanles.PlotControlPanel.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlotControlPanel.class);
 
     private PlotCard currentPlotCard;
     private ListView<PlotCard> plotCards;

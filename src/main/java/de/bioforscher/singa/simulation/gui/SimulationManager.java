@@ -16,7 +16,7 @@ import java.util.concurrent.ExecutionException;
  */
 public class SimulationManager extends Task<Simulation> implements UpdateEventEmitter<GraphUpdatedEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(de.bioforscher.singa.simulation.application.SimulationManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(SimulationManager.class);
 
     private final Simulation simulation;
     private CopyOnWriteArrayList<UpdateEventListener<GraphUpdatedEvent>> listeners;

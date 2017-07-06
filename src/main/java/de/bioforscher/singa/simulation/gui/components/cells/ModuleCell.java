@@ -1,6 +1,6 @@
 package de.bioforscher.singa.simulation.gui.components.cells;
 
-import de.bioforscher.singa.simulation.modules.model.AvailableModules;
+import de.bioforscher.singa.simulation.gui.AvailableModules;
 import javafx.geometry.Insets;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;

@@ -31,8 +31,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tec.units.ri.quantity.Quantities;
 
 import java.io.File;
+
+import static tec.units.ri.unit.MetricPrefix.NANO;
+import static tec.units.ri.unit.Units.SECOND;
 
 public class BioGraphSimulation extends Application {
 
@@ -58,8 +62,9 @@ public class BioGraphSimulation extends Application {
     public void start(Stage stage) throws Exception {
         // setup the simulation
         logger.info("Setting up simulation from example ...");
-        this.simulation = SimulationExamples.createIodineMultiReactionExample();
-                // SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+        this.simulation = //SimulationExamples.createSimulationFromSBML();
+                // SimulationExamples.createIodineMultiReactionExample();
+                 SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
         logger.info("Initializing simulation GUI.");
         // Stage
         this.stage = stage;
@@ -118,12 +123,12 @@ public class BioGraphSimulation extends Application {
         mIFullScreen.setOnAction(this::toggleFullScreen);
 
         // Species Overview
-        MenuItem mISpeciesOverview = new MenuItem("Species", new ImageView(de.bioforscher.singa.simulation.application.IconProvider.MOLECULE_ICON_IMAGE));
+        MenuItem mISpeciesOverview = new MenuItem("Species", new ImageView(IconProvider.MOLECULE_ICON_IMAGE));
         mISpeciesOverview.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN));
         mISpeciesOverview.setOnAction(this::showSpeciesOverview);
 
         // Module Overview
-        MenuItem mIModuleOverview = new MenuItem("Modules", new ImageView(de.bioforscher.singa.simulation.application.IconProvider.MOLECULE_ICON_IMAGE));
+        MenuItem mIModuleOverview = new MenuItem("Modules", new ImageView(IconProvider.MOLECULE_ICON_IMAGE));
         mIModuleOverview.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.ALT_DOWN));
         mIModuleOverview.setOnAction(this::showModuleOverview);
 
@@ -184,15 +189,15 @@ public class BioGraphSimulation extends Application {
         // ToolBar
         ToolBar toolBar = new ToolBar();
         // simulate button
-        Button btnSimulate = de.bioforscher.singa.simulation.application.IconProvider.FontAwesome.createIconButton(de.bioforscher.singa.simulation.application.IconProvider.FontAwesome.ICON_PLAY);
+        Button btnSimulate = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_PLAY);
         btnSimulate.setTooltip(new Tooltip("Starts the simulation with the current configuration."));
         btnSimulate.setOnAction(this::startSimulation);
         // stop button
-        Button btnStop = de.bioforscher.singa.simulation.application.IconProvider.FontAwesome.createIconButton(de.bioforscher.singa.simulation.application.IconProvider.FontAwesome.ICON_PAUSE);
+        Button btnStop = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_PAUSE);
         btnStop.setTooltip(new Tooltip("Pauses the current simulation."));
         btnStop.setOnAction(this::pauseSimulation);
         // rearrange button
-        Button btnRearrange = de.bioforscher.singa.simulation.application.IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_EXCHANGE);
+        Button btnRearrange = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_EXCHANGE);
         btnRearrange.setTooltip(new Tooltip("Starts a rearrangement cycle trying to optimize the graph layout."));
         btnRearrange.setOnAction(this::arrangeGraph);
         // Concentration slider
