@@ -127,12 +127,7 @@ public class BioGraphSimulation extends Application {
         mISpeciesOverview.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.ALT_DOWN));
         mISpeciesOverview.setOnAction(this::showSpeciesOverview);
 
-        // Module Overview
-        MenuItem mIModuleOverview = new MenuItem("Modules", new ImageView(IconProvider.MOLECULE_ICON_IMAGE));
-        mIModuleOverview.setAccelerator(new KeyCodeCombination(KeyCode.M, KeyCombination.ALT_DOWN));
-        mIModuleOverview.setOnAction(this::showModuleOverview);
-
-        menuView.getItems().addAll(mIFullScreen, mISpeciesOverview, mIModuleOverview);
+        menuView.getItems().addAll(mIFullScreen, mISpeciesOverview);
 
         Menu menuPreferences = new Menu("Preferences");
 
@@ -288,18 +283,6 @@ public class BioGraphSimulation extends Application {
         speciesStage.setScene(new Scene(speciesOverviewPane, width, height));
         speciesStage.sizeToScene();
         speciesStage.showAndWait();
-    }
-
-    private void showModuleOverview(ActionEvent event) {
-        int width = 800;
-        int height = 600;
-        Stage moduleStage = prepareUtilityWindow(width, height, "Module Overview");
-        ModuleOverviewPane moduleOverviewPane = new ModuleOverviewPane(this);
-        moduleStage.setScene(new Scene(moduleOverviewPane, width, height));
-        moduleStage.sizeToScene();
-        moduleStage.show();
-        // TODO maybe a better solution
-        moduleOverviewPane.doAfterShow();
     }
 
     private void startGraphWizard(ActionEvent event) {

@@ -8,7 +8,6 @@ import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
 import de.bioforscher.singa.simulation.gui.IconProvider;
 import de.bioforscher.singa.simulation.gui.components.cards.GeneralEntityCard;
 import de.bioforscher.singa.simulation.modules.reactions.model.Reaction;
-import de.bioforscher.singa.simulation.modules.reactions.model.Reactions;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.VPos;
@@ -123,10 +122,9 @@ public class SpeciesOverviewPane extends BorderPane {
     private void fillTreeGroupedByReaction() {
         this.rootItem.getChildren().clear();
         this.owner.getSimulation().getModules().stream()
-                .filter(module -> module instanceof Reactions)
-                .map(Reactions.class::cast)
-                .forEach(reactions -> {
-                    for (Reaction reaction : reactions.getReactions()) {
+                .filter(module -> module instanceof Reaction)
+                .map(Reaction.class::cast)
+                .forEach(reaction -> {
                         TreeItem<String> reactionItem = createReactionTreeItem(reaction.getDisplayString());
                         this.rootItem.getChildren().add(reactionItem);
                         for (ChemicalEntity entity : reaction.getSubstrates()) {
@@ -137,7 +135,7 @@ public class SpeciesOverviewPane extends BorderPane {
                             TreeItem<String> speciesItem = createSpeciesTreeItem(entity.getIdentifier().toString());
                             reactionItem.getChildren().add(speciesItem);
                         }
-                    }
+
                 });
     }
 

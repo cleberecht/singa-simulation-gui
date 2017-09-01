@@ -3,12 +3,10 @@ package de.bioforscher.singa.simulation.gui.components.plots;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.core.events.UpdateEventListener;
 import de.bioforscher.singa.features.parameters.EnvironmentalParameters;
+import de.bioforscher.singa.simulation.events.NodeUpdatedEvent;
 import de.bioforscher.singa.simulation.gui.SingaPreferences;
 import de.bioforscher.singa.simulation.gui.renderer.ColorManager;
-import de.bioforscher.singa.simulation.events.NodeUpdatedEvent;
 import de.bioforscher.singa.simulation.model.graphs.BioNode;
-import de.bioforscher.singa.simulation.modules.model.updates.PotentialUpdate;
-import de.bioforscher.singa.simulation.modules.model.updates.PotentialUpdates;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,9 +18,6 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static de.bioforscher.singa.chemistry.descriptive.features.molarmass.MolarMass.GRAM_PER_MOLE;
@@ -38,8 +33,6 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
     private static final Logger logger = LoggerFactory.getLogger(ConcentrationPlot.class);
 
     private ObservableList<ChemicalEntity<?>> observedEntities = FXCollections.observableArrayList();
-    // mirrors the data received from events
-    private Map<Integer, List<PotentialUpdate>> mirroredData;
     private BioNode referencedNode;
 
     private int maximalDataPoints;
@@ -50,7 +43,6 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
         super(new NumberAxis(), new NumberAxis());
         logger.debug("Initializing {} for node {} ...", this.getClass().getSimpleName(), referencedNode.getIdentifier());
         this.referencedNode = referencedNode;
-        this.mirroredData = new HashMap<>();
         setObservedSpecies(observedEntities);
         initializeData();
         initializePreferences();
@@ -163,13 +155,11 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
                 Series<Number, Number> series = this.getData().stream()
                         .filter(s -> s.getName().equals(entity.getIdentifier().toString()))
                         .findFirst().get();
-                // add to mirrored values
-                this.mirroredData.put(event.getEpoch(), PotentialUpdates.collectChanges(event.getNode()));
                 // get concentration of entity
                 double concentration = event.getNode().getConcentration(entity).getValue().doubleValue();
                 // add to plot
                 Platform.runLater(() -> {
-                    series.getData().add(new Data<>(event.getEpoch(), concentration));
+                    series.getData().add(new Data<>(event.getTime().getValue().doubleValue(), concentration));
                     if (this.scaleXAxis) {
                         if (series.getData().size() > this.maximalDataPoints) {
                             series.getData().remove(series.getData().size() - this.maximalDataPoints);
@@ -178,13 +168,14 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
                 });
 
             }
+            // FIXME axis scaling does probably not work
             if (this.scaleXAxis) {
-                ((NumberAxis) this.getXAxis()).setLowerBound(event.getEpoch() - this.maximalDataPoints);
-                ((NumberAxis) this.getXAxis()).setUpperBound(event.getEpoch() - 1);
+                ((NumberAxis) this.getXAxis()).setLowerBound(event.getTime().getValue().doubleValue() - this.maximalDataPoints);
+                ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue() - 1);
             } else {
-                ((NumberAxis) this.getXAxis()).setUpperBound(event.getEpoch() - 1);
-                if (event.getEpoch() % 6 == 0) {
-                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getEpoch() / 6);
+                ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue() - 1);
+                if (event.getTime().getValue().doubleValue() % 6 == 0) {
+                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getTime().getValue().doubleValue() / 6);
                 }
             }
         }

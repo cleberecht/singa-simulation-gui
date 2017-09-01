@@ -12,7 +12,8 @@ import javafx.scene.paint.Color;
 
 import static de.bioforscher.singa.simulation.model.compartments.NodeState.MEMBRANE;
 
-public class BioGraphRenderer extends GraphRenderer<BioNode, BioEdge, AutomatonGraph> implements UpdateEventListener<GraphUpdatedEvent> {
+public class BioGraphRenderer extends GraphRenderer<BioNode, BioEdge, Integer, AutomatonGraph> implements
+        UpdateEventListener<GraphUpdatedEvent> {
 
     private BioGraphRenderOptions bioRenderingOptions;
 
