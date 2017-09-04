@@ -96,8 +96,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
 
             @Override
             public String toString(Number object) {
-                return this.formatter.format(object.doubleValue() * EnvironmentalParameters.getInstance().getTimeStep()
-                        .getValue().doubleValue());
+                return this.formatter.format(object.doubleValue());
             }
 
             @Override
@@ -109,6 +108,23 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
 
     private void configureYAxis() {
         this.getYAxis().setLabel("Molar concentration in " + GRAM_PER_MOLE.toString());
+        ((NumberAxis) this.getYAxis()).setForceZeroInRange(true);
+        ((NumberAxis) this.getYAxis()).setLowerBound(0.0);
+        ((NumberAxis) this.getYAxis()).setUpperBound(1.0);
+        ((NumberAxis) this.getYAxis()).setTickLabelFormatter(new StringConverter<Number>() {
+
+            private NumberFormat formatter = new DecimalFormat("0.000E0");
+
+            @Override
+            public String toString(Number object) {
+                return this.formatter.format(object.doubleValue());
+            }
+
+            @Override
+            public Number fromString(String string) {
+                return 0;
+            }
+        });
     }
 
     public void setObservedSpecies(Set<ChemicalEntity<?>> observedSpecies) {
@@ -173,10 +189,10 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
                 ((NumberAxis) this.getXAxis()).setLowerBound(event.getTime().getValue().doubleValue() - this.maximalDataPoints);
                 ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue() - 1);
             } else {
-                ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue() - 1);
-                if (event.getTime().getValue().doubleValue() % 6 == 0) {
-                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getTime().getValue().doubleValue() / 6);
-                }
+                ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue());
+//                if (event.getTime().getValue().doubleValue() % 6 == 0) {
+//                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getTime().getValue().doubleValue() / 6);
+//                }
             }
         }
 

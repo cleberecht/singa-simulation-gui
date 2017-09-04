@@ -3,6 +3,7 @@ package de.bioforscher.singa.simulation.gui;
 import de.bioforscher.singa.core.events.UpdateEventEmitter;
 import de.bioforscher.singa.core.events.UpdateEventListener;
 import de.bioforscher.singa.simulation.events.GraphUpdatedEvent;
+import de.bioforscher.singa.simulation.model.graphs.BioNode;
 import de.bioforscher.singa.simulation.modules.model.Simulation;
 import javafx.concurrent.Task;
 import org.slf4j.Logger;
@@ -20,6 +21,10 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
 
     private final Simulation simulation;
     private CopyOnWriteArrayList<UpdateEventListener<GraphUpdatedEvent>> listeners;
+
+    private final int TICKS_PER_SECOND = 25;
+    private final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+    // final int MAX_FRAMESKIP = 5;
 
     public SimulationManager(Simulation simulation) {
         logger.debug("Initializing simulation manager ...");
@@ -40,15 +45,19 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
 
     @Override
     protected Simulation call() throws Exception {
+        long nextTick = System.currentTimeMillis();
         while (!isCancelled()) {
+            long currentMillis = System.currentTimeMillis();
             this.simulation.nextEpoch();
-            this.emitEvent(new GraphUpdatedEvent(this.simulation.getGraph()));
-            try {
-                Thread.sleep(40);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                this.cancel();
+            if (currentMillis > nextTick) {
+                nextTick = currentMillis + SKIP_TICKS;
+                this.emitEvent(new GraphUpdatedEvent(this.simulation.getGraph()));
+                this.simulation.getGraph().getNodes().stream()
+                        .filter(BioNode::isObserved)
+                        .forEach(simulation::emitNextEpochEvent);
+                System.out.println(simulation.getElapsedTime());
             }
+            // System.out.println("Time for current epoch (in ms): "System.currentTimeMillis()-currentMillis);
         }
         return this.simulation;
     }

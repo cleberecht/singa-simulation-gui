@@ -4,7 +4,10 @@ import de.bioforscher.singa.features.parameters.EnvironmentalParameters;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.CompartmentControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.EnvironmentalParameterControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.PlotControlPanel;
-import de.bioforscher.singa.simulation.gui.components.panes.*;
+import de.bioforscher.singa.simulation.gui.components.panes.PlotPreferencesPane;
+import de.bioforscher.singa.simulation.gui.components.panes.ResizablePane;
+import de.bioforscher.singa.simulation.gui.components.panes.SimulationCanvas;
+import de.bioforscher.singa.simulation.gui.components.panes.SpeciesOverviewPane;
 import de.bioforscher.singa.simulation.gui.wizards.AddSpeciesWizard;
 import de.bioforscher.singa.simulation.gui.wizards.NewGraphWizard;
 import de.bioforscher.singa.simulation.gui.wizards.NewReactionWizard;
@@ -31,12 +34,8 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.units.ri.quantity.Quantities;
 
 import java.io.File;
-
-import static tec.units.ri.unit.MetricPrefix.NANO;
-import static tec.units.ri.unit.Units.SECOND;
 
 public class BioGraphSimulation extends Application {
 
@@ -62,9 +61,10 @@ public class BioGraphSimulation extends Application {
     public void start(Stage stage) throws Exception {
         // setup the simulation
         logger.info("Setting up simulation from example ...");
-        this.simulation = //SimulationExamples.createSimulationFromSBML();
+        this.simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
+                //SimulationExamples.createSimulationFromSBML();
                 // SimulationExamples.createIodineMultiReactionExample();
-                 SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+                // SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
         logger.info("Initializing simulation GUI.");
         // Stage
         this.stage = stage;
