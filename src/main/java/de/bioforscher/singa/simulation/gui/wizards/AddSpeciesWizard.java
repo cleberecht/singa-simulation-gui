@@ -1,7 +1,7 @@
 package de.bioforscher.singa.simulation.gui.wizards;
 
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
-import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
+import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.components.cells.EntityCell;
 import de.bioforscher.singa.simulation.gui.components.panes.SBMLSearchPane;
 import de.bioforscher.singa.simulation.gui.components.panes.SpeciesSearchPane;
@@ -23,10 +23,10 @@ import java.util.Set;
 public class AddSpeciesWizard extends Wizard {
 
     private Stage owner;
-    private BioGraphSimulation simulation;
+    private CellularGraphAutomatonSimulation simulation;
     private Set<ChemicalEntity> speciesToAdd;
 
-    public AddSpeciesWizard(Stage owner, BioGraphSimulation simulation) {
+    public AddSpeciesWizard(Stage owner, CellularGraphAutomatonSimulation simulation) {
         super(new ChooseSpeciesMethodPage(), new SpeciesFromChEBI(), new SpeciesFromSBML());
         this.owner = owner;
         this.simulation = simulation;
@@ -47,11 +47,11 @@ public class AddSpeciesWizard extends Wizard {
         this.owner.close();
     }
 
-    public BioGraphSimulation getSimulation() {
+    public CellularGraphAutomatonSimulation getSimulation() {
         return this.simulation;
     }
 
-    public void setSimulation(BioGraphSimulation simulation) {
+    public void setSimulation(CellularGraphAutomatonSimulation simulation) {
         this.simulation = simulation;
     }
 

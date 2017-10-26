@@ -37,9 +37,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 
-public class BioGraphSimulation extends Application {
+public class CellularGraphAutomatonSimulation extends Application {
 
-    private static final Logger logger = LoggerFactory.getLogger(BioGraphSimulation.class);
+    private static final Logger logger = LoggerFactory.getLogger(CellularGraphAutomatonSimulation.class);
 
     private Stage stage;
 

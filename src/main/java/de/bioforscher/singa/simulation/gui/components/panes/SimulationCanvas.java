@@ -3,13 +3,13 @@ package de.bioforscher.singa.simulation.gui.components.panes;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
 import de.bioforscher.singa.mathematics.vectors.Vector2D;
-import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
-import de.bioforscher.singa.simulation.gui.components.menus.BioGraphContextMenu;
-import de.bioforscher.singa.simulation.gui.components.menus.BioNodeContextMenu;
+import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
+import de.bioforscher.singa.simulation.gui.components.menus.AutomatonNodeContextMenu;
+import de.bioforscher.singa.simulation.gui.components.menus.AutomatonContextMenu;
 import de.bioforscher.singa.simulation.gui.renderer.BioGraphRenderer;
 import de.bioforscher.singa.simulation.model.compartments.CellSection;
 import de.bioforscher.singa.simulation.model.compartments.EnclosedCompartment;
-import de.bioforscher.singa.simulation.model.graphs.BioNode;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -17,16 +17,16 @@ import javafx.scene.paint.Color;
 
 public class SimulationCanvas extends Canvas {
 
-    private BioGraphSimulation owner;
+    private CellularGraphAutomatonSimulation owner;
     private BioGraphRenderer renderer;
-    private BioGraphContextMenu graphContextMenu;
+    private AutomatonContextMenu graphContextMenu;
 
     private Vector2D dragStart;
 
-    public SimulationCanvas(BioGraphSimulation owner) {
+    public SimulationCanvas(CellularGraphAutomatonSimulation owner) {
         this.owner = owner;
         this.renderer = new BioGraphRenderer();
-        this.graphContextMenu = new BioGraphContextMenu(this.owner.getSimulation(), this);
+        this.graphContextMenu = new AutomatonContextMenu(this.owner.getSimulation(), this);
 
         this.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleClick);
 
@@ -56,7 +56,7 @@ public class SimulationCanvas extends Canvas {
                 CellSection cellSection = this.owner.getCompartmentControlPanel().getSelectedCellSection();
                 if (cellSection != null && cellSection instanceof EnclosedCompartment) {
                     this.owner.getGraph().addNodesToCompartment((EnclosedCompartment) cellSection, rectangle);
-                    this.owner.getCompartmentControlPanel().updateData(this.owner.getGraph().getSections());
+                    this.owner.getCompartmentControlPanel().updateData(this.owner.getGraph().getCellSections());
                 }
                 this.draw();
             }
@@ -73,9 +73,9 @@ public class SimulationCanvas extends Canvas {
 
     private void handleRightClick(MouseEvent event) {
         boolean isNode = false;
-        for (BioNode node : this.owner.getGraph().getNodes()) {
+        for (AutomatonNode node : this.owner.getGraph().getNodes()) {
             if (isClickedOnNode(event, node)) {
-                BioNodeContextMenu bioNodeContextMenu = new BioNodeContextMenu(node, this.owner);
+                AutomatonNodeContextMenu bioNodeContextMenu = new AutomatonNodeContextMenu(node, this.owner);
                 bioNodeContextMenu.show(this.owner.getPlotControlPanel(), event.getScreenX(), event.getScreenY());
                 isNode = true;
                 break;
@@ -87,7 +87,7 @@ public class SimulationCanvas extends Canvas {
     }
 
     private void handleLeftClick(MouseEvent event) {
-        for (BioNode node : this.owner.getGraph().getNodes()) {
+        for (AutomatonNode node : this.owner.getGraph().getNodes()) {
             if (isClickedOnNode(event, node)) {
                 ChemicalEntity species = this.renderer.getBioRenderingOptions().getNodeHighlightEntity();
                 node.setConcentration(species, this.owner.getConcentrationSlider().getValue());
@@ -97,7 +97,7 @@ public class SimulationCanvas extends Canvas {
         }
     }
 
-    private boolean isClickedOnNode(MouseEvent event, BioNode node) {
+    private boolean isClickedOnNode(MouseEvent event, AutomatonNode node) {
         return node.getPosition().isNearVector(new Vector2D(event.getX() + this.renderer.getRenderingOptions().getNodeDiameter() / 2,
                         event.getY() + this.renderer.getRenderingOptions().getNodeDiameter() / 2),
                 this.renderer.getRenderingOptions().getNodeDiameter() / 2);
@@ -116,7 +116,7 @@ public class SimulationCanvas extends Canvas {
     }
 
     public void resetGraphContextMenu() {
-        this.graphContextMenu = new BioGraphContextMenu(this.owner.getSimulation(), this);
+        this.graphContextMenu = new AutomatonContextMenu(this.owner.getSimulation(), this);
     }
 
 

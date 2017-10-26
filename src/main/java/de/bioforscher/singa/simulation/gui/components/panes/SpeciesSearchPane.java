@@ -2,7 +2,6 @@ package de.bioforscher.singa.simulation.gui.components.panes;
 
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.entities.Species;
-import de.bioforscher.singa.chemistry.descriptive.features.databases.chebi.ChEBISearchService;
 import de.bioforscher.singa.simulation.gui.components.cards.ChemicalEntityCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -111,8 +110,10 @@ public class SpeciesSearchPane extends GridPane {
             @Override
             protected List<Species> call() throws Exception {
                 String searchTerm = SpeciesSearchPane.this.searchField.getText();
-                ChEBISearchService searchService = new ChEBISearchService(searchTerm);
-                return searchService.search();
+                // FIXME currently no seach is available
+                // ChEBISearchService searchService = new ChEBISearchService(searchTerm);
+                // return searchService.search();
+                return new ArrayList<>();
             }
         };
 

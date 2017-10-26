@@ -22,7 +22,7 @@ public class CompartmentControlPanel extends GridPane {
     private ListView<CellSection> compartmentList = new ListView<>();
 
     public CompartmentControlPanel(Simulation simulation) {
-        initializeData(simulation.getGraph().getSections());
+        initializeData(simulation.getGraph().getCellSections());
         configureGrid();
         configureCompartmentList();
         addControlsToGrid();

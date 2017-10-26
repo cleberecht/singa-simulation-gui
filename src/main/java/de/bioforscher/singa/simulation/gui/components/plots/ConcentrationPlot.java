@@ -6,7 +6,7 @@ import de.bioforscher.singa.features.parameters.EnvironmentalParameters;
 import de.bioforscher.singa.simulation.events.NodeUpdatedEvent;
 import de.bioforscher.singa.simulation.gui.SingaPreferences;
 import de.bioforscher.singa.simulation.gui.renderer.ColorManager;
-import de.bioforscher.singa.simulation.model.graphs.BioNode;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +23,7 @@ import java.util.Set;
 import static de.bioforscher.singa.chemistry.descriptive.features.molarmass.MolarMass.GRAM_PER_MOLE;
 
 /**
- * The chart is used for visualization of BioNode concentrations changes over
+ * The chart is used for visualization of AutomatonNode concentrations changes over
  * the course of a simulation.
  *
  * @author cl
@@ -33,13 +33,13 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
     private static final Logger logger = LoggerFactory.getLogger(ConcentrationPlot.class);
 
     private ObservableList<ChemicalEntity<?>> observedEntities = FXCollections.observableArrayList();
-    private BioNode referencedNode;
+    private AutomatonNode referencedNode;
 
     private int maximalDataPoints;
     private int tickSpacing;
     private boolean scaleXAxis = false;
 
-    public ConcentrationPlot(Set<ChemicalEntity<?>> observedEntities, BioNode referencedNode) {
+    public ConcentrationPlot(Set<ChemicalEntity<?>> observedEntities, AutomatonNode referencedNode) {
         super(new NumberAxis(), new NumberAxis());
         logger.debug("Initializing {} for node {} ...", this.getClass().getSimpleName(), referencedNode.getIdentifier());
         this.referencedNode = referencedNode;
@@ -165,7 +165,6 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
     @Override
     public void onEventReceived(NodeUpdatedEvent event) {
         if (event.getNode().equals(this.referencedNode)) {
-            // TODO iterate over species instead of series
             for (ChemicalEntity entity : this.observedEntities) {
                 // get associated value
                 Series<Number, Number> series = this.getData().stream()
@@ -202,7 +201,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
         return this.observedEntities;
     }
 
-    public BioNode getReferencedNode() {
+    public AutomatonNode getReferencedNode() {
         return this.referencedNode;
     }
 

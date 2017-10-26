@@ -4,7 +4,7 @@ import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntities;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.entities.ComplexedChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.entities.Species;
-import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
+import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.IconProvider;
 import de.bioforscher.singa.simulation.gui.components.cards.GeneralEntityCard;
 import de.bioforscher.singa.simulation.modules.reactions.model.Reaction;
@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
  */
 public class SpeciesOverviewPane extends BorderPane {
 
-    private BioGraphSimulation owner;
+    private CellularGraphAutomatonSimulation owner;
 
     private ComboBox<String> cbGrouping;
     private TreeView<String> treeView;
@@ -40,7 +40,7 @@ public class SpeciesOverviewPane extends BorderPane {
 
     private VBox currentDetailView;
 
-    public SpeciesOverviewPane(BioGraphSimulation owner) {
+    public SpeciesOverviewPane(CellularGraphAutomatonSimulation owner) {
         this.owner = owner;
         this.entityMapping = ChemicalEntities.generateEntityMapFromSet(owner.getSimulation().getChemicalEntities());
         initializeCards();

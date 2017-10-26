@@ -1,10 +1,10 @@
 package de.bioforscher.singa.simulation.gui.components.menus;
 
-import de.bioforscher.singa.simulation.gui.BioGraphSimulation;
+import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.components.cards.PlotCard;
 import de.bioforscher.singa.simulation.gui.components.plots.ConcentrationPlot;
 import de.bioforscher.singa.simulation.model.compartments.NodeState;
-import de.bioforscher.singa.simulation.model.graphs.BioNode;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import de.bioforscher.singa.simulation.modules.model.Simulation;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
@@ -12,12 +12,12 @@ import javafx.scene.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class BioNodeContextMenu extends ContextMenu {
+public class AutomatonNodeContextMenu extends ContextMenu {
 
-    private static final Logger logger = LoggerFactory.getLogger(BioNodeContextMenu.class);
+    private static final Logger logger = LoggerFactory.getLogger(AutomatonNodeContextMenu.class);
 
-    private final BioGraphSimulation owner;
-    private BioNode node;
+    private final CellularGraphAutomatonSimulation owner;
+    private AutomatonNode node;
 
     private CustomMenuItem header = new CustomMenuItem();
     private MenuItem delete = new MenuItem();
@@ -25,7 +25,7 @@ public class BioNodeContextMenu extends ContextMenu {
     private Menu stateMenu;
     private ToggleGroup stateGroup;
 
-    public BioNodeContextMenu(BioNode node, BioGraphSimulation owner) {
+    public AutomatonNodeContextMenu(AutomatonNode node, CellularGraphAutomatonSimulation owner) {
         this.node = node;
         this.owner = owner;
         configureHeader();
@@ -94,11 +94,11 @@ public class BioNodeContextMenu extends ContextMenu {
         this.owner.redrawGraph();
     }
 
-    public BioNode getNode() {
+    public AutomatonNode getNode() {
         return this.node;
     }
 
-    public void setNode(BioNode node) {
+    public void setNode(AutomatonNode node) {
         this.node = node;
     }
 

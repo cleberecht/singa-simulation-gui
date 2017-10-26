@@ -134,7 +134,7 @@ public class PlotCard extends GridPane {
             try {
                 EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), this.simulation.getChemicalEntities());
                 writer.addNodeToObserve(this.plot.getReferencedNode());
-                this.simulation.setWriter(writer);
+                this.simulation.addEventListener(writer);
             } catch (IOException e) {
                 throw new UncheckedIOException("Could not use the selected folder to set up the update writer.", e);
             }

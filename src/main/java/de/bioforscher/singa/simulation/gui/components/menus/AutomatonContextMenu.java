@@ -17,7 +17,7 @@ import java.util.Map.Entry;
  *
  * @author cl
  */
-public class BioGraphContextMenu extends ContextMenu {
+public class AutomatonContextMenu extends ContextMenu {
 
     private final SimulationCanvas owner;
     private Simulation simulation;
@@ -27,7 +27,7 @@ public class BioGraphContextMenu extends ContextMenu {
     private Menu colorByChemicalEntityMenu;
     private ToggleGroup chemicalEntitiesGrouping;
 
-    public BioGraphContextMenu(Simulation simulation, SimulationCanvas canvas) {
+    public AutomatonContextMenu(Simulation simulation, SimulationCanvas canvas) {
         this.simulation = simulation;
         this.owner = canvas;
         configureColorByStateItem();

@@ -169,12 +169,11 @@ class GraphConfigurationPage extends WizardPage {
 
     public AutomatonGraph createGraph() {
         if (this.tgMethods.getSelectedToggle().equals(this.rbRectangularGraph)) {
-            return AutomatonGraphs.copyStructureToBioGraph(Graphs.buildGridGraph(
+            return AutomatonGraphs.useStructureFrom(Graphs.buildGridGraph(
                     this.spNumberVerticalNodes.getValue(), this.spNumberHorizontalNodes.getValue(),
                     new Rectangle(400, 400), false));
         } else {
-            return AutomatonGraphs
-                    .copyStructureToBioGraph(Graphs.buildRandomGraph(this.spNumberNodes.getValue(),
+            return AutomatonGraphs.useStructureFrom(Graphs.buildRandomGraph(this.spNumberNodes.getValue(),
                             this.spConnectivity.getValue(), new Rectangle(400, 400)));
         }
     }

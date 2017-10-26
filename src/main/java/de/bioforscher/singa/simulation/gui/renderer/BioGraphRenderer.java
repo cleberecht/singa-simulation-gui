@@ -5,14 +5,14 @@ import de.bioforscher.singa.javafx.renderer.graphs.GraphRenderOptions;
 import de.bioforscher.singa.javafx.renderer.graphs.GraphRenderer;
 import de.bioforscher.singa.mathematics.geometry.edges.LineSegment;
 import de.bioforscher.singa.simulation.events.GraphUpdatedEvent;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonEdge;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
-import de.bioforscher.singa.simulation.model.graphs.BioEdge;
-import de.bioforscher.singa.simulation.model.graphs.BioNode;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.scene.paint.Color;
 
 import static de.bioforscher.singa.simulation.model.compartments.NodeState.MEMBRANE;
 
-public class BioGraphRenderer extends GraphRenderer<BioNode, BioEdge, Integer, AutomatonGraph> implements
+public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, Integer, AutomatonGraph> implements
         UpdateEventListener<GraphUpdatedEvent> {
 
     private BioGraphRenderOptions bioRenderingOptions;
@@ -43,7 +43,7 @@ public class BioGraphRenderer extends GraphRenderer<BioNode, BioEdge, Integer, A
     }
 
     @Override
-    protected void drawNode(BioNode node) {
+    protected void drawNode(AutomatonNode node) {
         // decide on style
         switch (this.bioRenderingOptions.getRenderingMode()) {
             case ENTITY_BASED: {
@@ -84,7 +84,7 @@ public class BioGraphRenderer extends GraphRenderer<BioNode, BioEdge, Integer, A
     }
 
     @Override
-    protected void drawEdge(BioEdge edge) {
+    protected void drawEdge(AutomatonEdge edge) {
         // set width
         getGraphicsContext().setLineWidth(getRenderingOptions().getEdgeThickness());
         LineSegment connectingSegment = new LineSegment(edge.getSource().getPosition(), edge.getTarget().getPosition());
