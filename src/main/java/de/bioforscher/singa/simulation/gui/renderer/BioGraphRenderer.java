@@ -21,25 +21,11 @@ public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge
         GraphRenderOptions options = new GraphRenderOptions();
         this.setRenderingOptions(options);
         this.bioRenderingOptions = new BioGraphRenderOptions();
+        renderVoronoi(true);
     }
 
     public BioGraphRenderOptions getBioRenderingOptions() {
         return this.bioRenderingOptions;
-    }
-
-    @Override
-    public void render(AutomatonGraph graph) {
-        // background
-        getGraphicsContext().setFill(getRenderingOptions().getBackgroundColor());
-        getGraphicsContext().fillRect(0, 0, getDrawingWidth(), getDrawingHeight());
-        // render edges
-        if (getRenderingOptions().isDisplayingEdges()) {
-            graph.getEdges().forEach(this::drawEdge);
-        }
-        // render nodes
-        if (getRenderingOptions().isDisplayingNodes()) {
-            graph.getNodes().forEach(this::drawNode);
-        }
     }
 
     @Override

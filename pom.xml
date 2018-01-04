@@ -17,12 +17,12 @@
        <dependency>
            <groupId>de.bioforscher.singa</groupId>
            <artifactId>singa-simulation</artifactId>
-           <version>0.2.3</version>
+           <version>0.3.1</version>
        </dependency>
        <dependency>
            <groupId>de.bioforscher.singa</groupId>
            <artifactId>singa-javafx</artifactId>
-           <version>0.2.3</version>
+           <version>0.3.2-alpha</version>
        </dependency>
        <dependency>
            <groupId>org.slf4j</groupId>

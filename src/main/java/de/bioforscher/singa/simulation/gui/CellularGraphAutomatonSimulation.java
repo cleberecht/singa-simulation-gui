@@ -49,8 +49,8 @@ public class CellularGraphAutomatonSimulation extends Application {
     private CompartmentControlPanel compartmentControlPanel;
     private Slider concentrationSlider;
 
-    private Simulation simulation;
-    private SimulationManager simulationManager = new SimulationManager(this.simulation);
+    public static Simulation simulation;
+    private SimulationManager simulationManager = new SimulationManager(simulation);
 
     public static void main(String[] args) {
         logger.info("Started simulation GUI.");
@@ -61,10 +61,13 @@ public class CellularGraphAutomatonSimulation extends Application {
     public void start(Stage stage) throws Exception {
         // setup the simulation
         logger.info("Setting up simulation from example ...");
-        this.simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
-                //SimulationExamples.createSimulationFromSBML();
-                // SimulationExamples.createIodineMultiReactionExample();
-                // SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+        if (simulation == null) {
+            simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
+            // SimulationExamples.createSimulationFromSBML();
+            // SimulationExamples.createIodineMultiReactionExample();
+            // SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+        }
+
         logger.info("Initializing simulation GUI.");
         // Stage
         this.stage = stage;
@@ -98,14 +101,12 @@ public class CellularGraphAutomatonSimulation extends Application {
 
         // Adding Species
         MenuItem mIAddSpecies = new MenuItem("Add Species ...");
-        mIAddSpecies.setAccelerator(new KeyCodeCombination(KeyCode.S,
-                KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        mIAddSpecies.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         mIAddSpecies.setOnAction(this::showSearchSpeciesPanel);
 
         // Adding Reactions
         MenuItem mIAddReaction = new MenuItem("Add Reaction ...");
-        mIAddReaction.setAccelerator(new KeyCodeCombination(KeyCode.R,
-                KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
+        mIAddReaction.setAccelerator(new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN, KeyCombination.ALT_DOWN));
         mIAddReaction.setOnAction(this::startReactionWizard);
 
         menuFile.getItems().addAll(mINewGraph, mILoadBioGraph, mISaveGraph, new SeparatorMenuItem(), mIAddSpecies,
@@ -150,7 +151,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         chartTab.setContent(this.plotControlPanel);
         rightPane.getTabs().add(chartTab);
 
-        this.compartmentControlPanel = new CompartmentControlPanel(this.simulation);
+        this.compartmentControlPanel = new CompartmentControlPanel(simulation);
         Tab compartmentTab = new Tab();
         compartmentTab.setText("Compartments");
         compartmentTab.setClosable(false);
@@ -240,13 +241,13 @@ public class CellularGraphAutomatonSimulation extends Application {
     }
 
     private void initializeSimulationManager() {
-        this.simulationManager = new SimulationManager(this.simulation);
+        this.simulationManager = new SimulationManager(simulation);
         this.simulationManager.addEventListener(this.simulationCanvas.getRenderer());
     }
 
     private void arrangeGraph(ActionEvent event) {
         logger.debug("Starting rearrangement cycle ...");
-        this.simulationCanvas.getRenderer().arrangeGraph(this.simulation.getGraph());
+        this.simulationCanvas.getRenderer().arrangeGraph(simulation.getGraph());
     }
 
     private Stage prepareUtilityWindow(int width, int height, String title) {
@@ -269,7 +270,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         speciesStage.showAndWait();
         if (speciesWizard.getSpeciesToAdd() != null) {
             speciesWizard.getSpeciesToAdd().forEach(species -> {
-                this.simulation.getChemicalEntities().add(species);
+                simulation.getChemicalEntities().add(species);
                 this.simulationCanvas.resetGraphContextMenu();
             });
         }
@@ -341,7 +342,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         FileChooser fileChooser = prepareFileChooser("Save graph to file", "xml");
         File file = fileChooser.showSaveDialog(this.stage);
         if (file != null) {
-            GraphMLExportService.exportGraph(this.simulation.getGraph(), file);
+            GraphMLExportService.exportGraph(simulation.getGraph(), file);
         }
     }
 
@@ -357,7 +358,7 @@ public class CellularGraphAutomatonSimulation extends Application {
     }
 
     private void resetGraph(AutomatonGraph graph) {
-        this.simulation.setGraph(graph);
+        simulation.setGraph(graph);
         this.simulationCanvas.getRenderer().getBioRenderingOptions().setNodeHighlightEntity(null);
         this.simulationCanvas.getRenderer().getBioRenderingOptions().setEdgeHighlightEntity(null);
         this.simulationCanvas.resetGraphContextMenu();
@@ -405,15 +406,15 @@ public class CellularGraphAutomatonSimulation extends Application {
     }
 
     public AutomatonGraph getGraph() {
-        return this.simulation.getGraph();
+        return simulation.getGraph();
     }
 
     public void setGraph(AutomatonGraph graph) {
-        this.simulation.setGraph(graph);
+        simulation.setGraph(graph);
     }
 
     public Simulation getSimulation() {
-        return this.simulation;
+        return simulation;
     }
 
 }

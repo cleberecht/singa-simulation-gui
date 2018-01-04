@@ -2,8 +2,8 @@ package de.bioforscher.singa.simulation.gui.components.cards;
 
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.features.databases.chebi.ChEBIImageService;
-import de.bioforscher.singa.chemistry.descriptive.features.molarmass.MolarMass;
 import de.bioforscher.singa.core.identifier.ChEBIIdentifier;
+import de.bioforscher.singa.structure.features.molarmass.MolarMass;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;

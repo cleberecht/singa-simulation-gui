@@ -20,7 +20,8 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Set;
 
-import static de.bioforscher.singa.chemistry.descriptive.features.molarmass.MolarMass.GRAM_PER_MOLE;
+import static de.bioforscher.singa.structure.features.molarmass.MolarMass.GRAM_PER_MOLE;
+
 
 /**
  * The chart is used for visualization of AutomatonNode concentrations changes over
