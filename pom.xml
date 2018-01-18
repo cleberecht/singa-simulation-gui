@@ -6,7 +6,7 @@
 
     <groupId>de.bioforscher.singa</groupId>
     <artifactId>singa-simulation-gui</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1-alpha</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -24,11 +24,7 @@
            <artifactId>singa-javafx</artifactId>
            <version>0.3.2-alpha</version>
        </dependency>
-       <dependency>
-           <groupId>org.slf4j</groupId>
-           <artifactId>slf4j-log4j12</artifactId>
-           <version>1.7.21</version>
-       </dependency>
+
    </dependencies>
 
     <build>

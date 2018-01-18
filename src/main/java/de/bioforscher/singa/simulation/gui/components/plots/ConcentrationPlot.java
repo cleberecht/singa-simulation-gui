@@ -84,7 +84,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
     }
 
     private void configureXAxis() {
-        this.getXAxis().setAutoRanging(false);
+        this.getXAxis().setAutoRanging(true);
         // TODO false for swiping style
         ((NumberAxis) this.getXAxis()).setForceZeroInRange(true);
         ((NumberAxis) this.getXAxis()).setLowerBound(0);
@@ -190,9 +190,9 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
                 ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue() - 1);
             } else {
                 ((NumberAxis) this.getXAxis()).setUpperBound(event.getTime().getValue().doubleValue());
-//                if (event.getTime().getValue().doubleValue() % 6 == 0) {
-//                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getTime().getValue().doubleValue() / 6);
-//                }
+                if (event.getTime().getValue().doubleValue() % 6 == 0) {
+                    ((NumberAxis) this.getXAxis()).setTickUnit(event.getTime().getValue().doubleValue() / 6);
+                }
             }
         }
 

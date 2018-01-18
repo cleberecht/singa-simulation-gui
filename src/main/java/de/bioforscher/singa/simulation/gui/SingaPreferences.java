@@ -29,7 +29,7 @@ public class SingaPreferences {
         /**
          * 500
          */
-        public static final int MAXIMAL_DATA_POINTS_VALUE = 500;
+        public static final int MAXIMAL_DATA_POINTS_VALUE = 200;
 
         /**
          * Spacing between ticks

@@ -34,8 +34,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tec.units.ri.quantity.Quantities;
 
 import java.io.File;
+
+import static tec.units.ri.unit.MetricPrefix.NANO;
+import static tec.units.ri.unit.Units.SECOND;
 
 public class CellularGraphAutomatonSimulation extends Application {
 
@@ -62,10 +66,10 @@ public class CellularGraphAutomatonSimulation extends Application {
         // setup the simulation
         logger.info("Setting up simulation from example ...");
         if (simulation == null) {
-            simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
-            // SimulationExamples.createSimulationFromSBML();
-            // SimulationExamples.createIodineMultiReactionExample();
-            // SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+            // simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
+            // simulation = SimulationExamples.createSimulationFromSBML();
+            // simulation = SimulationExamples.createIodineMultiReactionExample();
+            simulation = SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
         }
 
         logger.info("Initializing simulation GUI.");

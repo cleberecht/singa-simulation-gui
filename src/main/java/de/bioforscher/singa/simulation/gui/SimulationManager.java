@@ -22,7 +22,7 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
     private final Simulation simulation;
     private CopyOnWriteArrayList<UpdateEventListener<GraphUpdatedEvent>> listeners;
 
-    private final int TICKS_PER_SECOND = 25;
+    private final int TICKS_PER_SECOND = 20;
     private final int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
     // final int MAX_FRAMESKIP = 5;
 
@@ -44,7 +44,7 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
     }
 
     @Override
-    protected Simulation call() throws Exception {
+    protected Simulation call() {
         long nextTick = System.currentTimeMillis();
         int skips = 0;
         while (!isCancelled()) {
@@ -53,9 +53,12 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
             if (currentMillis > nextTick) {
                 nextTick = currentMillis + SKIP_TICKS;
                 this.emitEvent(new GraphUpdatedEvent(this.simulation.getGraph()));
-                this.simulation.getGraph().getNodes().stream()
-                        .filter(AutomatonNode::isObserved)
-                        .forEach(simulation::emitNextEpochEvent);
+                for (AutomatonNode automatonNode : this.simulation.getGraph().getNodes()) {
+                    if (automatonNode.isObserved()) {
+                        simulation.emitNextEpochEvent(automatonNode);
+                        System.out.println("emitted event after "+skips+" skips");
+                    }
+                }
                 skips = 0;
             } else {
                 skips++;

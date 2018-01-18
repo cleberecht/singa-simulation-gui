@@ -21,7 +21,7 @@ public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge
         GraphRenderOptions options = new GraphRenderOptions();
         this.setRenderingOptions(options);
         this.bioRenderingOptions = new BioGraphRenderOptions();
-        renderVoronoi(true);
+        // renderVoronoi(true);
     }
 
     public BioGraphRenderOptions getBioRenderingOptions() {
@@ -51,7 +51,7 @@ public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge
                         break;
                     }
                     case CYTOSOL: {
-                        getGraphicsContext().setFill(Color.LIGHTGREEN);
+                        getGraphicsContext().setFill(Color.CORAL);
                         break;
                     }
                     case MEMBRANE: {
