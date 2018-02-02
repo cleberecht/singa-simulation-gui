@@ -1,6 +1,6 @@
 package de.bioforscher.singa.simulation.gui;
 
-import de.bioforscher.singa.features.parameters.EnvironmentalParameters;
+import de.bioforscher.singa.simulation.gui.components.SimulationIndicator;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.CompartmentControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.EnvironmentalParameterControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.PlotControlPanel;
@@ -26,6 +26,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -34,12 +35,12 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tec.units.ri.quantity.Quantities;
+import tec.uom.se.quantity.Quantities;
 
 import java.io.File;
 
-import static tec.units.ri.unit.MetricPrefix.NANO;
-import static tec.units.ri.unit.Units.SECOND;
+import static tec.uom.se.unit.MetricPrefix.NANO;
+import static tec.uom.se.unit.Units.SECOND;
 
 public class CellularGraphAutomatonSimulation extends Application {
 
@@ -55,6 +56,7 @@ public class CellularGraphAutomatonSimulation extends Application {
 
     public static Simulation simulation;
     private SimulationManager simulationManager = new SimulationManager(simulation);
+    private SimulationIndicator timeIndicator;
 
     public static void main(String[] args) {
         logger.info("Started simulation GUI.");
@@ -168,7 +170,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         environmentTab.setClosable(false);
         EnvironmentalParameterControlPanel environmentControlPanel = new EnvironmentalParameterControlPanel();
         environmentControlPanel.setDirtyableText(environmentTab.textProperty());
-        environmentControlPanel.update(EnvironmentalParameters.getInstance(), null);
+        environmentControlPanel.update();
         environmentTab.setContent(environmentControlPanel);
         rightPane.getTabs().add(environmentTab);
 
@@ -213,8 +215,10 @@ public class CellularGraphAutomatonSimulation extends Application {
         // Simulation Frame
         root.setCenter(splitPane);
 
+        timeIndicator = new SimulationIndicator();
+
         // Anchor to the Bottom
-        root.setBottom(new VBox(new Text(" ")));
+        root.setBottom(new HBox(new Text("Current Time Step: "), timeIndicator));
         root.bottomProperty().get().minHeight(10);
         // Scene
         Scene scene = new Scene(root);
@@ -246,7 +250,8 @@ public class CellularGraphAutomatonSimulation extends Application {
 
     private void initializeSimulationManager() {
         this.simulationManager = new SimulationManager(simulation);
-        this.simulationManager.addEventListener(this.simulationCanvas.getRenderer());
+        this.simulationManager.addEventListener(timeIndicator);
+        this.simulationManager.addEventListener(simulationCanvas.getRenderer());
     }
 
     private void arrangeGraph(ActionEvent event) {

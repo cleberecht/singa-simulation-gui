@@ -90,7 +90,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
         ((NumberAxis) this.getXAxis()).setLowerBound(0);
         ((NumberAxis) this.getXAxis()).setUpperBound(this.maximalDataPoints);
         ((NumberAxis) this.getXAxis()).setTickUnit(this.tickSpacing);
-        this.getXAxis().setLabel("Time in " + EnvironmentalParameters.getInstance().getTimeStep().getUnit().toString());
+        this.getXAxis().setLabel("Time in " + EnvironmentalParameters.getTimeStep().getUnit().toString());
         ((NumberAxis) this.getXAxis()).setTickLabelFormatter(new StringConverter<Number>() {
 
             private NumberFormat formatter = new DecimalFormat("0.000E0");

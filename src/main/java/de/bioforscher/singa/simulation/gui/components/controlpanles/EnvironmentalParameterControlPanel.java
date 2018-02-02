@@ -15,7 +15,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
-import tec.units.ri.quantity.Quantities;
+import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -26,8 +26,8 @@ import java.util.Observable;
 import java.util.Observer;
 
 import static de.bioforscher.singa.features.units.UnitProvider.PASCAL_SECOND;
-import static tec.units.ri.unit.MetricPrefix.MILLI;
-import static tec.units.ri.unit.Units.*;
+import static tec.uom.se.unit.MetricPrefix.MILLI;
+import static tec.uom.se.unit.Units.*;
 
 public class EnvironmentalParameterControlPanel extends GridPane implements Observer {
 
@@ -55,7 +55,7 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
         configureTemperatureValue();
         configureViscosityValue();
         addRemainingComponentsToGrid();
-        EnvironmentalParameters.getInstance().addObserver(this);
+        EnvironmentalParameters.attachObserver(this);
     }
 
     private void configureGrid() {
@@ -106,7 +106,7 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
     }
 
     private void configureNodeDistanceValue() {
-        this.nodeDistanceValue = new Spinner<>(1.0, 1000.0, EnvironmentalParameters.getInstance().getNodeDistance()
+        this.nodeDistanceValue = new Spinner<>(1.0, 1000.0, EnvironmentalParameters.getNodeDistance()
                 .getValue().doubleValue());
         this.nodeDistanceValue.setEditable(true);
         this.nodeDistanceValue.setPrefWidth(150);
@@ -117,15 +117,14 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
     private void configureNodeDistanceUnit() {
         this.nodeDistanceUnit.getItems().addAll(
                 UnitPrefixes.generateUnitsForPrefixes(UnitPrefix.getDefaultSpacePrefixes(), METRE));
-        this.nodeDistanceUnit.setValue(EnvironmentalParameters.getInstance().getNodeDistance().getUnit());
+        this.nodeDistanceUnit.setValue(EnvironmentalParameters.getNodeDistance().getUnit());
         this.nodeDistanceUnit.setPrefWidth(100);
         this.nodeDistanceUnit.valueProperty()
                 .addListener((observable, oldValue, newValue) -> this.markChangesAsUnApplied());
     }
 
     private void configureTimeStepValue() {
-        this.timeStepValue = new Spinner<>(1.0, 1000.0, EnvironmentalParameters.getInstance().getTimeStep().getValue()
-                .doubleValue());
+        this.timeStepValue = new Spinner<>(1, 1000, EnvironmentalParameters.getTimeStep().getValue().intValue());
         this.timeStepValue.setEditable(true);
         this.timeStepValue.setPrefWidth(150);
         this.timeStepValue.valueProperty()
@@ -135,14 +134,14 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
     private void configureTimeStepUnit() {
         this.timeStepUnit.getItems().addAll(
                 UnitPrefixes.generateUnitsForPrefixes(UnitPrefix.getDefaultTimePrefixes(), SECOND));
-        this.timeStepUnit.setValue(EnvironmentalParameters.getInstance().getTimeStep().getUnit());
+        this.timeStepUnit.setValue(EnvironmentalParameters.getTimeStep().getUnit());
         this.timeStepUnit.setPrefWidth(100);
         this.timeStepUnit.valueProperty()
                 .addListener((observable, oldValue, newValue) -> this.markChangesAsUnApplied());
     }
 
     private void configureTemperatureValue() {
-        this.temperatureValue = new Spinner<>(0, 100, EnvironmentalParameters.getInstance().getSystemTemperature()
+        this.temperatureValue = new Spinner<>(0, 100, EnvironmentalParameters.getTemperature()
                 .getValue().doubleValue(), 0.1);
         this.temperatureValue.setEditable(true);
         this.temperatureValue.setPrefWidth(150);
@@ -151,7 +150,7 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
     }
 
     private void configureViscosityValue() {
-        this.viscosityValue = new Spinner<>(0, 100, EnvironmentalParameters.getInstance().getSystemViscosity()
+        this.viscosityValue = new Spinner<>(0, 100, EnvironmentalParameters.getViscosity()
                 .getValue().doubleValue(), 0.1);
         this.viscosityValue.setEditable(true);
         this.viscosityValue.setPrefWidth(150);
@@ -172,44 +171,45 @@ public class EnvironmentalParameterControlPanel extends GridPane implements Obse
     }
 
     private void applyChanges(ActionEvent event) {
-        Quantity<Length> nodeDistance = Quantities.getQuantity(
-                this.nodeDistanceValue.getValue(), this.nodeDistanceUnit.getValue());
-        Quantity<Time> timeStep = Quantities.getQuantity(
-                this.timeStepValue.getValue(), this.timeStepUnit.getValue());
-        Quantity<Temperature> systemTemperature = Quantities.getQuantity(
-                this.temperatureValue.getValue(), CELSIUS);
-        Quantity<DynamicViscosity> systemViscosity = Quantities.getQuantity(
-                this.viscosityValue.getValue(), MILLI(PASCAL_SECOND));
+        Quantity<Length> nodeDistance = Quantities.getQuantity(this.nodeDistanceValue.getValue(), this.nodeDistanceUnit.getValue());
+        Quantity<Time> timeStep = Quantities.getQuantity(this.timeStepValue.getValue(), this.timeStepUnit.getValue());
+        Quantity<Temperature> systemTemperature = Quantities.getQuantity(this.temperatureValue.getValue(), CELSIUS);
+        Quantity<DynamicViscosity> systemViscosity = Quantities.getQuantity(this.viscosityValue.getValue(), MILLI(PASCAL_SECOND));
 
-        EnvironmentalParameters.getInstance().setNodeDistance(nodeDistance);
-        EnvironmentalParameters.getInstance().setTimeStep(timeStep);
-        EnvironmentalParameters.getInstance().setSystemTemperature(systemTemperature);
-        EnvironmentalParameters.getInstance().setSystemViscosity(systemViscosity);
+        EnvironmentalParameters.setNodeDistance(nodeDistance);
+        EnvironmentalParameters.setTimeStep(timeStep);
+        EnvironmentalParameters.setTemperature(systemTemperature);
+        EnvironmentalParameters.setSystemViscosity(systemViscosity);
 
         markChangesAsApplied();
     }
 
     private void restoreDefault(ActionEvent event) {
-        EnvironmentalParameters.getInstance().resetToDefaultValues();
+        EnvironmentalParameters.setNodeDistance(EnvironmentalParameters.DEFAULT_NODE_DISTANCE);
+        EnvironmentalParameters.setTimeStep(EnvironmentalParameters.DEFAULT_TIME_STEP);
+        EnvironmentalParameters.setTemperature(EnvironmentalParameters.DEFAULT_TEMPERATURE);
+        EnvironmentalParameters.setSystemViscosity(EnvironmentalParameters.DEFAULT_VISCOSITY);
         markChangesAsApplied();
     }
 
     @Override
     public void update(Observable o, Object arg) {
-        EnvironmentalParameters changedVariables = (EnvironmentalParameters) o;
+        update();
+    }
 
-        Quantity<Length> nodeDistance = changedVariables.getNodeDistance();
+    public void update() {
+        Quantity<Length> nodeDistance = EnvironmentalParameters.getNodeDistance();
         this.nodeDistanceUnit.setValue(nodeDistance.getUnit());
         this.nodeDistanceValue.getValueFactory().setValue(nodeDistance.getValue().doubleValue());
 
-        Quantity<Time> timeStep = changedVariables.getTimeStep();
+        Quantity<Time> timeStep = EnvironmentalParameters.getTimeStep();
         this.timeStepUnit.setValue(timeStep.getUnit());
-        this.timeStepValue.getValueFactory().setValue(timeStep.getValue().doubleValue());
+        this.timeStepValue.getValueFactory().setValue(timeStep.getValue().intValue());
 
-        Quantity<Temperature> temperature = changedVariables.getSystemTemperature().to(CELSIUS);
+        Quantity<Temperature> temperature = EnvironmentalParameters.getTemperature().to(CELSIUS);
         this.temperatureValue.getValueFactory().setValue(temperature.getValue().doubleValue());
 
-        Quantity<DynamicViscosity> viscosity = changedVariables.getSystemViscosity();
+        Quantity<DynamicViscosity> viscosity = EnvironmentalParameters.getViscosity();
         this.viscosityValue.getValueFactory().setValue(viscosity.getValue().doubleValue());
 
         markChangesAsApplied();

@@ -16,7 +16,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import tec.units.ri.quantity.Quantities;
+import tec.uom.se.quantity.Quantities;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -25,8 +25,8 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 
 import static de.bioforscher.singa.features.units.UnitProvider.PASCAL_SECOND;
-import static tec.units.ri.unit.MetricPrefix.*;
-import static tec.units.ri.unit.Units.*;
+import static tec.uom.se.unit.MetricPrefix.*;
+import static tec.uom.se.unit.Units.*;
 
 /**
  * A wizard used to create a new graph.
@@ -174,7 +174,7 @@ class GraphConfigurationPage extends WizardPage {
                     new Rectangle(400, 400), false));
         } else {
             return AutomatonGraphs.useStructureFrom(Graphs.buildRandomGraph(this.spNumberNodes.getValue(),
-                            this.spConnectivity.getValue(), new Rectangle(400, 400)));
+                    this.spConnectivity.getValue(), new Rectangle(400, 400)));
         }
     }
 
@@ -219,8 +219,7 @@ class EnvironmentalConfigurationPage extends WizardPage {
         content.add(this.spNodeDistance, 1, 0, 1, 1);
 
         this.cbNodeDistance = new ComboBox<>();
-        this.cbNodeDistance.getItems().addAll(UnitPrefixes.generateUnitsForPrefixes(UnitPrefix
-                .getDefaultSpacePrefixes(), METRE));
+        this.cbNodeDistance.getItems().addAll(UnitPrefixes.generateUnitsForPrefixes(UnitPrefix.getDefaultSpacePrefixes(), METRE));
         this.cbNodeDistance.setValue(NANO(METRE));
 
         content.add(this.cbNodeDistance, 2, 0, 1, 1);
@@ -233,8 +232,7 @@ class EnvironmentalConfigurationPage extends WizardPage {
         content.add(this.spTimeStep, 1, 1, 1, 1);
 
         this.cbTimeStep = new ComboBox<>();
-        this.cbTimeStep.getItems().addAll(UnitPrefixes.generateUnitsForPrefixes(UnitPrefix.getDefaultTimePrefixes(),
-                SECOND));
+        this.cbTimeStep.getItems().addAll(UnitPrefixes.generateUnitsForPrefixes(UnitPrefix.getDefaultTimePrefixes(), SECOND));
         this.cbTimeStep.setValue(MICRO(SECOND));
         content.add(this.cbTimeStep, 2, 1, 1, 1);
 
@@ -263,20 +261,15 @@ class EnvironmentalConfigurationPage extends WizardPage {
 
     public void createEnvironmentalVariables() {
         // TODO duplicated code in EnvironmentalParameterControlPanel
-        Quantity<Length> nodeDistance = Quantities.getQuantity(this.spNodeDistance.getValue(), this.cbNodeDistance
-                .getValue());
+        Quantity<Length> nodeDistance = Quantities.getQuantity(this.spNodeDistance.getValue(), this.cbNodeDistance.getValue());
         Quantity<Time> timeStep = Quantities.getQuantity(this.spTimeStep.getValue(), this.cbTimeStep.getValue());
-        Quantity<Temperature> systemTemperature = Quantities.getQuantity(this.spTemperature.getValue(),
-                CELSIUS);
-        Quantity<DynamicViscosity> systemViscosity = Quantities.getQuantity(this.spViscosity.getValue(),
-                MILLI(PASCAL_SECOND));
+        Quantity<Temperature> systemTemperature = Quantities.getQuantity(this.spTemperature.getValue(), CELSIUS);
+        Quantity<DynamicViscosity> systemViscosity = Quantities.getQuantity(this.spViscosity.getValue(), MILLI(PASCAL_SECOND));
 
-        EnvironmentalParameters.getInstance().setNodeDistance(nodeDistance);
-        EnvironmentalParameters.getInstance().setTimeStep(timeStep);
-        EnvironmentalParameters.getInstance().setSystemTemperature(systemTemperature);
-        EnvironmentalParameters.getInstance().setSystemViscosity(systemViscosity);
-        EnvironmentalParameters.getInstance().setCellularEnvironment(false);
-
+        EnvironmentalParameters.setNodeDistance(nodeDistance);
+        EnvironmentalParameters.setTimeStep(timeStep);
+        EnvironmentalParameters.setTemperature(systemTemperature);
+        EnvironmentalParameters.setSystemViscosity(systemViscosity);
     }
 
 }

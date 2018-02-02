@@ -13,19 +13,23 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
-   <dependencies>
-       <dependency>
-           <groupId>de.bioforscher.singa</groupId>
-           <artifactId>singa-simulation</artifactId>
-           <version>0.3.1</version>
-       </dependency>
-       <dependency>
-           <groupId>de.bioforscher.singa</groupId>
-           <artifactId>singa-javafx</artifactId>
-           <version>0.3.2-alpha</version>
-       </dependency>
-
-   </dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>de.bioforscher.singa</groupId>
+            <artifactId>singa-simulation</artifactId>
+            <version>0.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>de.bioforscher.singa</groupId>
+            <artifactId>singa-javafx</artifactId>
+            <version>0.3.2-alpha</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>1.7.21</version>
+        </dependency>
+    </dependencies>
 
     <build>
         <plugins>

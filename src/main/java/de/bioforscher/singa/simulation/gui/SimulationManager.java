@@ -52,11 +52,11 @@ public class SimulationManager extends Task<Simulation> implements UpdateEventEm
             this.simulation.nextEpoch();
             if (currentMillis > nextTick) {
                 nextTick = currentMillis + SKIP_TICKS;
-                this.emitEvent(new GraphUpdatedEvent(this.simulation.getGraph()));
+                emitEvent(new GraphUpdatedEvent(this.simulation.getGraph()));
                 for (AutomatonNode automatonNode : this.simulation.getGraph().getNodes()) {
                     if (automatonNode.isObserved()) {
                         simulation.emitNextEpochEvent(automatonNode);
-                        System.out.println("emitted event after "+skips+" skips");
+                        logger.debug("Emitted next epoch event after {} skips (at {} events per second).", skips, TICKS_PER_SECOND);
                     }
                 }
                 skips = 0;
