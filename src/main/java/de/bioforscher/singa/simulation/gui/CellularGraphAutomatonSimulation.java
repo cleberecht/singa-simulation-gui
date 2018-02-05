@@ -1,5 +1,7 @@
 package de.bioforscher.singa.simulation.gui;
 
+import de.bioforscher.singa.core.events.UpdateEventListener;
+import de.bioforscher.singa.simulation.events.NodeUpdatedEvent;
 import de.bioforscher.singa.simulation.gui.components.SimulationIndicator;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.CompartmentControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.EnvironmentalParameterControlPanel;
@@ -14,6 +16,7 @@ import de.bioforscher.singa.simulation.gui.wizards.NewReactionWizard;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
 import de.bioforscher.singa.simulation.modules.model.Simulation;
 import de.bioforscher.singa.simulation.modules.model.SimulationExamples;
+import de.bioforscher.singa.simulation.modules.model.SimulationManager;
 import de.bioforscher.singa.simulation.parser.graphs.GraphMLExportService;
 import de.bioforscher.singa.simulation.parser.graphs.GraphMLParserService;
 import javafx.application.Application;
@@ -38,6 +41,7 @@ import org.slf4j.LoggerFactory;
 import tec.uom.se.quantity.Quantities;
 
 import java.io.File;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import static tec.uom.se.unit.MetricPrefix.NANO;
 import static tec.uom.se.unit.Units.SECOND;
@@ -55,7 +59,7 @@ public class CellularGraphAutomatonSimulation extends Application {
     private Slider concentrationSlider;
 
     public static Simulation simulation;
-    private SimulationManager simulationManager = new SimulationManager(simulation);
+    private SimulationManager simulationManager;
     private SimulationIndicator timeIndicator;
 
     public static void main(String[] args) {
@@ -73,6 +77,7 @@ public class CellularGraphAutomatonSimulation extends Application {
             // simulation = SimulationExamples.createIodineMultiReactionExample();
             simulation = SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
         }
+        simulationManager = new SimulationManager(simulation);
 
         logger.info("Initializing simulation GUI.");
         // Stage
@@ -249,9 +254,11 @@ public class CellularGraphAutomatonSimulation extends Application {
     }
 
     private void initializeSimulationManager() {
-        this.simulationManager = new SimulationManager(simulation);
-        this.simulationManager.addEventListener(timeIndicator);
-        this.simulationManager.addEventListener(simulationCanvas.getRenderer());
+        CopyOnWriteArrayList<UpdateEventListener<NodeUpdatedEvent>> nodeListeners = this.simulationManager.getNodeListeners();
+        simulationManager = new SimulationManager(simulation);
+        nodeListeners.forEach(simulationManager::addNodeUpdateListener);
+        simulationManager.addGraphUpdateListener(timeIndicator);
+        simulationManager.addGraphUpdateListener(simulationCanvas.getRenderer());
     }
 
     private void arrangeGraph(ActionEvent event) {
@@ -388,6 +395,10 @@ public class CellularGraphAutomatonSimulation extends Application {
         } else {
             this.stage.setFullScreen(true);
         }
+    }
+
+    public SimulationManager getSimulationManager() {
+        return simulationManager;
     }
 
     public PlotControlPanel getPlotControlPanel() {

@@ -5,7 +5,6 @@ import de.bioforscher.singa.simulation.gui.components.cards.PlotCard;
 import de.bioforscher.singa.simulation.gui.components.plots.ConcentrationPlot;
 import de.bioforscher.singa.simulation.model.compartments.NodeState;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
-import de.bioforscher.singa.simulation.modules.model.Simulation;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
@@ -82,10 +81,9 @@ public class AutomatonNodeContextMenu extends ContextMenu {
 
     private void observeNode(ActionEvent event) {
         this.node.setObserved(true);
-        Simulation simulation = this.owner.getSimulation();
-        ConcentrationPlot plot = new ConcentrationPlot(simulation.getChemicalEntities(), this.node);
-        simulation.getListeners().add(plot);
-        this.owner.getPlotControlPanel().getPlotCards().add(new PlotCard(this.owner.getSimulation(), plot));
+        ConcentrationPlot plot = new ConcentrationPlot(this.owner.getSimulationManager().getSimulation().getChemicalEntities(), this.node);
+        this.owner.getSimulationManager().addNodeUpdateListener(plot);
+        this.owner.getPlotControlPanel().getPlotCards().add(new PlotCard(this.owner.getSimulationManager(), plot));
         this.owner.redrawGraph();
     }
 

@@ -2,11 +2,11 @@ package de.bioforscher.singa.simulation.gui.components.cards;
 
 import com.sun.javafx.stage.StageHelper;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
+import de.bioforscher.singa.simulation.events.EpochUpdateWriter;
 import de.bioforscher.singa.simulation.gui.IconProvider;
 import de.bioforscher.singa.simulation.gui.components.cells.ColoredEntityCell;
 import de.bioforscher.singa.simulation.gui.components.plots.ConcentrationPlot;
-import de.bioforscher.singa.simulation.events.EpochUpdateWriter;
-import de.bioforscher.singa.simulation.modules.model.Simulation;
+import de.bioforscher.singa.simulation.modules.model.SimulationManager;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.geometry.Insets;
@@ -35,15 +35,15 @@ import java.nio.file.Paths;
 public class PlotCard extends GridPane {
 
     private ConcentrationPlot plot;
-    private Simulation simulation;
+    private SimulationManager simulationManager;
 
     private HBox toolBar = new HBox();
     private ListView<ChemicalEntity<?>> speciesList = new ListView<>();
     private MenuButton optionsMenu = new MenuButton("", IconProvider.FontAwesome.createIconLabel(IconProvider.FontAwesome.ICON_COGS));
 
-    public PlotCard(Simulation simulation, ConcentrationPlot plot) {
+    public PlotCard(SimulationManager simulation, ConcentrationPlot plot) {
         this.plot = plot;
-        this.simulation = simulation;
+        this.simulationManager = simulation;
         configureGrid();
         configurePlot();
         configureToolBar();
@@ -132,9 +132,9 @@ public class PlotCard extends GridPane {
         File directory = directoryChooser.showDialog(StageHelper.getStages().iterator().next());
         if (directory != null) {
             try {
-                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), this.simulation.getChemicalEntities());
+                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), simulationManager.getSimulation().getChemicalEntities());
                 writer.addNodeToObserve(this.plot.getReferencedNode());
-                this.simulation.addEventListener(writer);
+                this.simulationManager.addNodeUpdateListener(writer);
             } catch (IOException e) {
                 throw new UncheckedIOException("Could not use the selected folder to set up the update writer.", e);
             }
