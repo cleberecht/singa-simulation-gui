@@ -1,27 +1,37 @@
 package de.bioforscher.singa.simulation.gui.renderer;
 
+import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.core.events.UpdateEventListener;
+import de.bioforscher.singa.javafx.renderer.colors.ColorScale;
 import de.bioforscher.singa.javafx.renderer.graphs.GraphRenderOptions;
 import de.bioforscher.singa.javafx.renderer.graphs.GraphRenderer;
+import de.bioforscher.singa.mathematics.algorithms.voronoi.VoronoiGenerator;
+import de.bioforscher.singa.mathematics.algorithms.voronoi.model.VoronoiCell;
+import de.bioforscher.singa.mathematics.algorithms.voronoi.model.VoronoiDiagram;
 import de.bioforscher.singa.mathematics.geometry.edges.LineSegment;
+import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
 import de.bioforscher.singa.simulation.events.GraphUpdatedEvent;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonEdge;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.scene.paint.Color;
 
+import java.util.HashMap;
+
 import static de.bioforscher.singa.simulation.model.compartments.NodeState.MEMBRANE;
 
-public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, Integer, AutomatonGraph> implements
+public class AutomatonGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, Integer, AutomatonGraph> implements
         UpdateEventListener<GraphUpdatedEvent> {
 
     private BioGraphRenderOptions bioRenderingOptions;
+    private AutomatonGraph graph;
 
-    public BioGraphRenderer() {
+    public AutomatonGraphRenderer(AutomatonGraph graph) {
         GraphRenderOptions options = new GraphRenderOptions();
         this.setRenderingOptions(options);
         this.bioRenderingOptions = new BioGraphRenderOptions();
-        // renderVoronoi(true);
+        this.graph = graph;
+        renderVoronoi(true);
     }
 
     public BioGraphRenderOptions getBioRenderingOptions() {
@@ -88,6 +98,48 @@ public class BioGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge
             // draw lower parallel
             LineSegment lowerParallelSegment = connectingSegment.getParallelSegment(-getRenderingOptions().getNodeDiameter() / 2.0);
             drawLineSegment(lowerParallelSegment);
+        }
+    }
+
+    public void renderVoronoi(boolean flag) {
+        if (flag) {
+            setRenderBefore(graph -> {
+                // generate node map for cell identification
+                HashMap<Integer, AutomatonNode> nodeMap = new HashMap<>();
+                int identifier = 0;
+
+                ChemicalEntity highlightEntity = bioRenderingOptions.getNodeHighlightEntity();
+                if (highlightEntity != null) {
+
+                    double min = Double.MAX_VALUE;
+                    double max = -Double.MAX_VALUE;
+
+                    for (AutomatonNode nodeType : graph.getNodes()) {
+                        nodeMap.put(identifier, nodeType);
+                        identifier++;
+                        double concentration = nodeType.getConcentration(highlightEntity).getValue().doubleValue();
+                        if (concentration > max) {
+                            max = concentration;
+                        } else if (concentration < min) {
+                            min = concentration;
+                        }
+                    }
+
+                    ColorScale nodeColorScale = bioRenderingOptions.getNodeColorScale();
+                    nodeColorScale.setMaximalValue(max);
+                    nodeColorScale.setMinimalValue(min);
+
+                    final VoronoiDiagram diagram = VoronoiGenerator.generateVoronoiDiagram(nodeMap, new Rectangle(getDrawingWidth(), getDrawingHeight()));
+                    for (VoronoiCell voronoiCell : diagram.getCells()) {
+                        int nodeIdentifier = voronoiCell.getSite().getIdentifier();
+                        AutomatonNode automatonNode = nodeMap.get(nodeIdentifier);
+                        getGraphicsContext().setFill(bioRenderingOptions.getNodeColor(automatonNode));
+                        fillPolygon(voronoiCell);
+                    }
+                }
+
+                return null;
+            });
         }
     }
 

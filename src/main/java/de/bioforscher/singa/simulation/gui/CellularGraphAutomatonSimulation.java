@@ -7,7 +7,6 @@ import de.bioforscher.singa.simulation.gui.components.controlpanles.CompartmentC
 import de.bioforscher.singa.simulation.gui.components.controlpanles.EnvironmentalParameterControlPanel;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.PlotControlPanel;
 import de.bioforscher.singa.simulation.gui.components.panes.PlotPreferencesPane;
-import de.bioforscher.singa.simulation.gui.components.panes.ResizablePane;
 import de.bioforscher.singa.simulation.gui.components.panes.SimulationCanvas;
 import de.bioforscher.singa.simulation.gui.components.panes.SpeciesOverviewPane;
 import de.bioforscher.singa.simulation.gui.wizards.AddSpeciesWizard;
@@ -27,7 +26,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -182,15 +180,15 @@ public class CellularGraphAutomatonSimulation extends Application {
         logger.debug("Initializing simulation canvas ...");
         this.simulationCanvas = new SimulationCanvas(this);
         this.simulationCanvas.getRenderer().getRenderingOptions().setNodeDiameter(8);
-        ResizablePane anchorPane = new ResizablePane(this.simulationCanvas);
+        // ResizablePane anchorPane = new ResizablePane(this.simulationCanvas);
         // Simulation Half
-        AnchorPane.setTopAnchor(this.simulationCanvas, 0.0);
-        AnchorPane.setLeftAnchor(this.simulationCanvas, 0.0);
-        AnchorPane.setBottomAnchor(this.simulationCanvas, 0.0);
-        AnchorPane.setRightAnchor(this.simulationCanvas, 0.0);
+//        AnchorPane.setTopAnchor(this.simulationCanvas, 0.0);
+//        AnchorPane.setLeftAnchor(this.simulationCanvas, 0.0);
+//        AnchorPane.setBottomAnchor(this.simulationCanvas, 0.0);
+//        AnchorPane.setRightAnchor(this.simulationCanvas, 0.0);
 
         // Main Content Pane
-        SplitPane splitPane = new SplitPane(anchorPane, rightPane);
+        SplitPane splitPane = new SplitPane(this.simulationCanvas, rightPane);
         splitPane.setDividerPosition(0, 0.4);
 
         // ToolBar
@@ -256,6 +254,8 @@ public class CellularGraphAutomatonSimulation extends Application {
     private void initializeSimulationManager() {
         CopyOnWriteArrayList<UpdateEventListener<NodeUpdatedEvent>> nodeListeners = this.simulationManager.getNodeListeners();
         simulationManager = new SimulationManager(simulation);
+        simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(1.0, SECOND));
+        simulationManager.setUpdateEmissionToFPS(24);
         nodeListeners.forEach(simulationManager::addNodeUpdateListener);
         simulationManager.addGraphUpdateListener(timeIndicator);
         simulationManager.addGraphUpdateListener(simulationCanvas.getRenderer());

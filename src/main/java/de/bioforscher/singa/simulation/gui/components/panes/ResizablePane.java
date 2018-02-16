@@ -18,8 +18,8 @@ public class ResizablePane extends AnchorPane {
     @Override
     public void resize(double width,double height) {
         super.resize(width, height);
-        this.canvas.setWidth(width);
-        this.canvas.setHeight(height);
+        this.canvas.setPrefWidth(width);
+        this.canvas.setPrefHeight(height);
     }
 
 }
