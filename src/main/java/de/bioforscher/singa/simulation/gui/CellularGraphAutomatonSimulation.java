@@ -17,7 +17,6 @@ import de.bioforscher.singa.simulation.modules.model.Simulation;
 import de.bioforscher.singa.simulation.modules.model.SimulationExamples;
 import de.bioforscher.singa.simulation.modules.model.SimulationManager;
 import de.bioforscher.singa.simulation.parser.graphs.GraphMLExportService;
-import de.bioforscher.singa.simulation.parser.graphs.GraphMLParserService;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -255,7 +254,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         CopyOnWriteArrayList<UpdateEventListener<NodeUpdatedEvent>> nodeListeners = this.simulationManager.getNodeListeners();
         simulationManager = new SimulationManager(simulation);
         simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(1.0, SECOND));
-        simulationManager.setUpdateEmissionToFPS(24);
+        simulationManager.setUpdateEmissionToFPS(10);
         nodeListeners.forEach(simulationManager::addNodeUpdateListener);
         simulationManager.addGraphUpdateListener(timeIndicator);
         simulationManager.addGraphUpdateListener(simulationCanvas.getRenderer());
@@ -345,13 +344,13 @@ public class CellularGraphAutomatonSimulation extends Application {
     }
 
     private void loadBioGraph(ActionEvent event) {
-        FileChooser fileChooser = prepareFileChooser("Load GraphML-File", "xml");
-        File file = fileChooser.showOpenDialog(this.stage);
-        if (file != null) {
-            GraphMLParserService parserService = new GraphMLParserService(file.getPath());
-            AutomatonGraph graph = parserService.parse();
-            resetGraph(graph);
-        }
+//        FileChooser fileChooser = prepareFileChooser("Load GraphML-File", "xml");
+//        File file = fileChooser.showOpenDialog(this.stage);
+//        if (file != null) {
+//            GraphMLParserService parserService = new GraphMLParserService(file.getPath());
+//            AutomatonGraph graph = parserService.parse();
+//            resetGraph(graph);
+//        }
     }
 
     private void saveBioGraph(ActionEvent event) {

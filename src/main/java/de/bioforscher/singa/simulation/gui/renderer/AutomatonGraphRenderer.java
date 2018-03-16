@@ -10,6 +10,7 @@ import de.bioforscher.singa.mathematics.algorithms.voronoi.model.VoronoiCell;
 import de.bioforscher.singa.mathematics.algorithms.voronoi.model.VoronoiDiagram;
 import de.bioforscher.singa.mathematics.geometry.edges.LineSegment;
 import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
+import de.bioforscher.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import de.bioforscher.singa.simulation.events.GraphUpdatedEvent;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonEdge;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
@@ -20,8 +21,8 @@ import java.util.HashMap;
 
 import static de.bioforscher.singa.simulation.model.compartments.NodeState.MEMBRANE;
 
-public class AutomatonGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, Integer, AutomatonGraph> implements
-        UpdateEventListener<GraphUpdatedEvent> {
+public class AutomatonGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, RectangularCoordinate, AutomatonGraph>
+        implements UpdateEventListener<GraphUpdatedEvent> {
 
     private BioGraphRenderOptions bioRenderingOptions;
     private AutomatonGraph graph;

@@ -3,15 +3,12 @@ package de.bioforscher.singa.simulation.gui.components.panes;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.javafx.renderer.graphs.GraphCanvas;
 import de.bioforscher.singa.javafx.renderer.graphs.GraphRenderer;
-import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
 import de.bioforscher.singa.mathematics.graphs.model.Node;
 import de.bioforscher.singa.mathematics.vectors.Vector2D;
 import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.components.menus.AutomatonContextMenu;
 import de.bioforscher.singa.simulation.gui.components.menus.AutomatonNodeContextMenu;
 import de.bioforscher.singa.simulation.gui.renderer.AutomatonGraphRenderer;
-import de.bioforscher.singa.simulation.model.compartments.CellSection;
-import de.bioforscher.singa.simulation.model.compartments.EnclosedCompartment;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.scene.control.*;
@@ -76,12 +73,12 @@ public class SimulationCanvas extends BorderPane {
                 this.renderer.drawDraggedRectangle(this.dragStart, new Vector2D(event.getX(), event.getY()));
             } else if (event.getEventType() == MouseEvent.MOUSE_RELEASED) {
                 this.renderer.getGraphicsContext().setFill(Color.DARKOLIVEGREEN.deriveColor(1, 1, 1, 0.5));
-                Rectangle rectangle = this.renderer.drawDraggedRectangle(this.dragStart, new Vector2D(event.getX(), event.getY()));
-                CellSection cellSection = this.owner.getCompartmentControlPanel().getSelectedCellSection();
-                if (cellSection != null && cellSection instanceof EnclosedCompartment) {
-                    this.owner.getGraph().addNodesToCompartment((EnclosedCompartment) cellSection, rectangle);
-                    this.owner.getCompartmentControlPanel().updateData(this.owner.getGraph().getCellSections());
-                }
+//                Rectangle rectangle = this.renderer.drawDraggedRectangle(this.dragStart, new Vector2D(event.getX(), event.getY()));
+//                CellSection cellSection = this.owner.getCompartmentControlPanel().getSelectedCellSection();
+//                if (cellSection != null && cellSection instanceof EnclosedCompartment) {
+//                    this.owner.getGraph().addNodesToCompartment((EnclosedCompartment) cellSection, rectangle);
+//                    this.owner.getCompartmentControlPanel().updateData(this.owner.getGraph().getCellSections());
+//                }
                 this.draw();
             }
         } else {

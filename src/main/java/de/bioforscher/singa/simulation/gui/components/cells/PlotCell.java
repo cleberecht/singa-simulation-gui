@@ -1,5 +1,6 @@
 package de.bioforscher.singa.simulation.gui.components.cells;
 
+import de.bioforscher.singa.mathematics.topology.grids.rectangular.RectangularCoordinate;
 import de.bioforscher.singa.simulation.gui.IconProvider;
 import de.bioforscher.singa.simulation.gui.components.cards.PlotCard;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.PlotControlPanel;
@@ -77,7 +78,7 @@ public class PlotCell extends ListCell<PlotCard> {
 
     private void addContent(PlotCard entity) {
         setText(null);
-        final int nodeIdentifier = entity.getPlot().getReferencedNode().getIdentifier();
+        final RectangularCoordinate nodeIdentifier = entity.getPlot().getReferencedNode().getIdentifier();
         this.name.setText("C" + nodeIdentifier);
         this.setTooltip(new Tooltip("Concentration Plot for Node " + nodeIdentifier));
         setContextMenu(this.contextMenu);

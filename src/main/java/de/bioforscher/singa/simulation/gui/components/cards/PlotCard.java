@@ -132,7 +132,7 @@ public class PlotCard extends GridPane {
         File directory = directoryChooser.showDialog(StageHelper.getStages().iterator().next());
         if (directory != null) {
             try {
-                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), simulationManager.getSimulation().getChemicalEntities());
+                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), simulationManager.getSimulation().getChemicalEntities(), simulationManager.getSimulation().getModules());
                 writer.addNodeToObserve(this.plot.getReferencedNode());
                 this.simulationManager.addNodeUpdateListener(writer);
             } catch (IOException e) {

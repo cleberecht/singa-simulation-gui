@@ -5,8 +5,6 @@ import de.bioforscher.singa.features.quantities.DynamicViscosity;
 import de.bioforscher.singa.features.units.UnitName;
 import de.bioforscher.singa.features.units.UnitPrefix;
 import de.bioforscher.singa.features.units.UnitPrefixes;
-import de.bioforscher.singa.mathematics.geometry.faces.Rectangle;
-import de.bioforscher.singa.mathematics.graphs.model.Graphs;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraphs;
 import javafx.beans.value.ObservableValue;
@@ -101,8 +99,7 @@ class GraphConfigurationPage extends WizardPage {
 
     }
 
-    private void hideUnselected(ObservableValue<? extends Toggle> observableToggle, Toggle oldToggle, Toggle
-            newToggle) {
+    private void hideUnselected(ObservableValue<? extends Toggle> observableToggle, Toggle oldToggle, Toggle newToggle) {
         this.nextButton.setDisable(false);
         this.finishButton.setDisable(false);
         if (newToggle.getUserData().equals("RECTANGLE")) {
@@ -111,10 +108,10 @@ class GraphConfigurationPage extends WizardPage {
             this.spNumberNodes.setDisable(true);
             this.spConnectivity.setDisable(true);
         } else if (newToggle.getUserData().equals("RANDOMIZED")) {
-            this.spNumberHorizontalNodes.setDisable(true);
-            this.spNumberVerticalNodes.setDisable(true);
-            this.spNumberNodes.setDisable(false);
-            this.spConnectivity.setDisable(false);
+//            this.spNumberHorizontalNodes.setDisable(true);
+//            this.spNumberVerticalNodes.setDisable(true);
+//            this.spNumberNodes.setDisable(false);
+//            this.spConnectivity.setDisable(false);
         }
     }
 
@@ -131,14 +128,14 @@ class GraphConfigurationPage extends WizardPage {
         this.rbRectangularGraph.setUserData("RECTANGLE");
         content.add(this.rbRectangularGraph, 0, 0, 4, 1);
 
-        Label labHorizontalNodes = new Label("Number of nodes horizontally:");
+        Label labHorizontalNodes = new Label("Number of column nodes (horizontal):");
         content.add(labHorizontalNodes, 0, 1, 1, 1);
 
         this.spNumberHorizontalNodes = new Spinner<>(1, 100, 10);
         this.spNumberHorizontalNodes.setEditable(true);
         content.add(this.spNumberHorizontalNodes, 1, 1, 1, 1);
 
-        Label labVerticalNodes = new Label("Number of Nodes vertically:");
+        Label labVerticalNodes = new Label("Number of nrow nodes (vertical):");
         content.add(labVerticalNodes, 2, 1, 1, 1);
 
         this.spNumberVerticalNodes = new Spinner<>(1, 100, 10);
@@ -146,7 +143,7 @@ class GraphConfigurationPage extends WizardPage {
         content.add(this.spNumberVerticalNodes, 3, 1, 1, 1);
 
         // randomized graph
-        this.rbRandomizedGraph = new RadioButton("Create randomized graph (with Erdos-Renyi model).");
+        this.rbRandomizedGraph = new RadioButton("Currently unavailable - Create randomized graph.");
         this.rbRandomizedGraph.setUserData("RANDOMIZED");
         content.add(this.rbRandomizedGraph, 0, 2, 4, 1);
 
@@ -168,14 +165,7 @@ class GraphConfigurationPage extends WizardPage {
     }
 
     public AutomatonGraph createGraph() {
-        if (this.tgMethods.getSelectedToggle().equals(this.rbRectangularGraph)) {
-            return AutomatonGraphs.useStructureFrom(Graphs.buildGridGraph(
-                    this.spNumberVerticalNodes.getValue(), this.spNumberHorizontalNodes.getValue(),
-                    new Rectangle(400, 400), false));
-        } else {
-            return AutomatonGraphs.useStructureFrom(Graphs.buildRandomGraph(this.spNumberNodes.getValue(),
-                    this.spConnectivity.getValue(), new Rectangle(400, 400)));
-        }
+        return AutomatonGraphs.createRectangularAutomatonGraph(this.spNumberVerticalNodes.getValue(), this.spNumberHorizontalNodes.getValue());
     }
 
     @Override
