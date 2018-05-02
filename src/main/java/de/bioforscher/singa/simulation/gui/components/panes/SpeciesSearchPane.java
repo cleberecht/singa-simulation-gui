@@ -1,7 +1,7 @@
 package de.bioforscher.singa.simulation.gui.components.panes;
 
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
-import de.bioforscher.singa.chemistry.descriptive.entities.Species;
+import de.bioforscher.singa.chemistry.descriptive.entities.SmallMolecule;
 import de.bioforscher.singa.simulation.gui.components.cards.ChemicalEntityCard;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -27,7 +27,7 @@ public class SpeciesSearchPane extends GridPane {
 
     private static final int default_results_per_page = 4;
 
-    private List<Species> speciesList;
+    private List<SmallMolecule> speciesList;
     private ObservableList<ChemicalEntity> selectedSpecies;
     private TextField searchField;
     private ProgressIndicator progressIndicator;
@@ -90,7 +90,7 @@ public class SpeciesSearchPane extends GridPane {
         this.speciesList.clear();
         this.progressIndicator.setVisible(true);
 
-        Task listLoader = new Task<List<Species>>() {
+        Task listLoader = new Task<List<SmallMolecule>>() {
             {
                 setOnSucceeded(workerStateEvent -> {
                     SpeciesSearchPane.this.speciesList.addAll(getValue());
@@ -108,7 +108,7 @@ public class SpeciesSearchPane extends GridPane {
             }
 
             @Override
-            protected List<Species> call() throws Exception {
+            protected List<SmallMolecule> call() throws Exception {
                 String searchTerm = SpeciesSearchPane.this.searchField.getText();
                 // FIXME currently no seach is available
                 // ChEBISearchService searchService = new ChEBISearchService(searchTerm);

@@ -1,7 +1,7 @@
 package de.bioforscher.singa.simulation.gui.components.menus;
 
-import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntities;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
+import de.bioforscher.singa.features.identifiers.SimpleStringIdentifier;
 import de.bioforscher.singa.simulation.gui.components.panes.SimulationCanvas;
 import de.bioforscher.singa.simulation.gui.renderer.RenderingMode;
 import de.bioforscher.singa.simulation.modules.model.Simulation;
@@ -49,8 +49,7 @@ public class AutomatonContextMenu extends ContextMenu {
     private void configureColorByChemicalEntityMenu() {
         this.colorByChemicalEntityMenu = new Menu("Color by entity ...");
         this.chemicalEntitiesGrouping = new ToggleGroup();
-        Map<String, ChemicalEntity<?>> chemicalEntities = ChemicalEntities
-                .generateEntityMapFromSet(this.simulation.getChemicalEntities());
+        Map<SimpleStringIdentifier, ChemicalEntity> chemicalEntities = this.simulation.getChemicalEntityMap();
         // add MenuItem for every Species
         if (!chemicalEntities.isEmpty()) {
             fillSpeciesMenu(chemicalEntities);
@@ -62,8 +61,8 @@ public class AutomatonContextMenu extends ContextMenu {
         }
     }
 
-    private void fillSpeciesMenu(Map<String, ChemicalEntity<?>> speciesMap) {
-        for (Entry<String, ChemicalEntity<?>> species : speciesMap.entrySet()) {
+    private void fillSpeciesMenu(Map<SimpleStringIdentifier, ChemicalEntity> speciesMap) {
+        for (Entry<SimpleStringIdentifier, ChemicalEntity> species : speciesMap.entrySet()) {
             RadioMenuItem speciesMenuItem = setupSpeciesMenuItem(species.getValue());
             this.colorByChemicalEntityMenu.getItems().add(speciesMenuItem);
         }

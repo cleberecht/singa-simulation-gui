@@ -52,6 +52,7 @@ public class IconProvider {
 
         public static final String ICON_DOWNLOAD = "\uf01a";
         public static final String ICON_PLAY = "\uf04b";
+        public static final String ICON_STEP_FORWARD = "\uf051";
         public static final String ICON_PAUSE = "\uf04c";
         public static final String ICON_COGS = "\uf085";
         public static final String ICON_EXCHANGE = "\uf0ec";

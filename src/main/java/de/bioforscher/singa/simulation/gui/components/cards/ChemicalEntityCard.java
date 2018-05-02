@@ -2,7 +2,7 @@ package de.bioforscher.singa.simulation.gui.components.cards;
 
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.features.databases.chebi.ChEBIImageService;
-import de.bioforscher.singa.core.identifier.ChEBIIdentifier;
+import de.bioforscher.singa.features.identifiers.ChEBIIdentifier;
 import de.bioforscher.singa.structure.features.molarmass.MolarMass;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -42,7 +42,7 @@ public class ChemicalEntityCard extends GridPane {
     }
 
     private void configureImageView() {
-        if (this.chemicalEntity.getIdentifier() instanceof ChEBIIdentifier) {
+        if (getChemicalEntity().getFeature(ChEBIIdentifier.class) != null) {
             ChEBIImageService imageService = new ChEBIImageService(this.chemicalEntity.getIdentifier().toString());
             Image imageRepresentation = new Image(imageService.parse());
             this.speciesImage = new ImageView(imageRepresentation);

@@ -1,6 +1,10 @@
 package de.bioforscher.singa.simulation.gui;
 
+import de.bioforscher.singa.chemistry.descriptive.entities.ComplexedChemicalEntity;
+import de.bioforscher.singa.chemistry.descriptive.entities.Protein;
 import de.bioforscher.singa.core.events.UpdateEventListener;
+import de.bioforscher.singa.features.identifiers.UniProtIdentifier;
+import de.bioforscher.singa.features.parameters.EnvironmentalParameters;
 import de.bioforscher.singa.simulation.events.NodeUpdatedEvent;
 import de.bioforscher.singa.simulation.gui.components.SimulationIndicator;
 import de.bioforscher.singa.simulation.gui.components.controlpanles.CompartmentControlPanel;
@@ -12,11 +16,15 @@ import de.bioforscher.singa.simulation.gui.components.panes.SpeciesOverviewPane;
 import de.bioforscher.singa.simulation.gui.wizards.AddSpeciesWizard;
 import de.bioforscher.singa.simulation.gui.wizards.NewGraphWizard;
 import de.bioforscher.singa.simulation.gui.wizards.NewReactionWizard;
+import de.bioforscher.singa.simulation.model.compartments.EnclosedCompartment;
+import de.bioforscher.singa.simulation.model.compartments.Membrane;
+import de.bioforscher.singa.simulation.model.concentrations.MembraneContainer;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonGraph;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonGraphs;
+import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import de.bioforscher.singa.simulation.modules.model.Simulation;
-import de.bioforscher.singa.simulation.modules.model.SimulationExamples;
 import de.bioforscher.singa.simulation.modules.model.SimulationManager;
-import de.bioforscher.singa.simulation.parser.graphs.GraphMLExportService;
+import de.bioforscher.singa.simulation.modules.transport.FreeDiffusion;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.scene.Scene;
@@ -40,7 +48,7 @@ import tec.uom.se.quantity.Quantities;
 import java.io.File;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static tec.uom.se.unit.MetricPrefix.NANO;
+import static de.bioforscher.singa.features.units.UnitProvider.MOLE_PER_LITRE;
 import static tec.uom.se.unit.Units.SECOND;
 
 public class CellularGraphAutomatonSimulation extends Application {
@@ -72,7 +80,57 @@ public class CellularGraphAutomatonSimulation extends Application {
             // simulation = SimulationExamples.createDiffusionAndMembraneTransportExample();
             // simulation = SimulationExamples.createSimulationFromSBML();
             // simulation = SimulationExamples.createIodineMultiReactionExample();
-            simulation = SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+            // simulation = SimulationExamples.createDiffusionModuleExample(10, Quantities.getQuantity(500, NANO(SECOND)));
+
+
+            // simulation
+            simulation = new Simulation();
+            // g-protein subunits
+            Protein gProteinBeta = new Protein.Builder("G(B)")
+                    .name("G protein subunit beta")
+                    .additionalIdentifier(new UniProtIdentifier("P62873"))
+                    .build();
+            Protein gProteinGamma = new Protein.Builder("G(G)")
+                    .name("G protein subunit gamma")
+                    .additionalIdentifier(new UniProtIdentifier("P63211"))
+                    .build();
+            // complexed entity
+            ComplexedChemicalEntity gProteinBetaGamma = ComplexedChemicalEntity.create("G(BG)")
+                    .name("G protein beta gamma complex")
+                    .addAssociatedPart(gProteinBeta)
+                    .addAssociatedPart(gProteinGamma)
+                    .setMembraneAnchored(true)
+                    .build();
+            // create graph
+            AutomatonGraph graph = AutomatonGraphs.createRectangularAutomatonGraph(3, 2);
+            simulation.setGraph(graph);
+            // sections
+            EnclosedCompartment outerSection = new EnclosedCompartment("Ext", "Extracellular region");
+            EnclosedCompartment innerSection = new EnclosedCompartment("Cyt", "Cytoplasm");
+            Membrane membrane = Membrane.forCompartment(innerSection);
+            // distribute nodes to sections
+            graph.getNodesOfRow(0).forEach(node -> {
+                node.setCellSection(membrane);
+                node.setConcentrationContainer(new MembraneContainer(outerSection, innerSection, membrane));
+            });
+            graph.getNodesOfRow(1).forEach(node -> node.setCellSection(innerSection));
+            // reference sections in graph
+            graph.addCellSection(outerSection);
+            graph.addCellSection(innerSection);
+            graph.addCellSection(membrane);
+            // add some protein in cytoplasm
+//            AutomatonNode node1 = graph.getNode(2, 1);
+//            node1.setConcentration(gProteinBetaGamma, Quantities.getQuantity(0.1, MOLE_PER_LITRE)
+//                    .to(EnvironmentalParameters.getTransformedMolarConcentration()));
+            AutomatonNode node2 = graph.getNode(0, 0);
+            node2.setAvailableConcentration(gProteinBetaGamma, innerSection, Quantities.getQuantity(0.1, MOLE_PER_LITRE)
+                    .to(EnvironmentalParameters.getTransformedMolarConcentration()));
+            // add diffusion
+            FreeDiffusion.inSimulation(simulation)
+                    .onlyFor(gProteinBetaGamma)
+                    .build();
+
+
         }
         simulationManager = new SimulationManager(simulation);
 
@@ -200,15 +258,15 @@ public class CellularGraphAutomatonSimulation extends Application {
         Button btnStop = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_PAUSE);
         btnStop.setTooltip(new Tooltip("Pauses the current simulation."));
         btnStop.setOnAction(this::pauseSimulation);
-        // rearrange button
-        Button btnRearrange = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_EXCHANGE);
-        btnRearrange.setTooltip(new Tooltip("Starts a rearrangement cycle trying to optimize the graph layout."));
-        btnRearrange.setOnAction(this::arrangeGraph);
+        // step button
+        Button btnStep = IconProvider.FontAwesome.createIconButton(IconProvider.FontAwesome.ICON_STEP_FORWARD);
+        btnStep.setTooltip(new Tooltip("Pauses the current simulation."));
+        btnStep.setOnAction(this::stepSimulation);
         // Concentration slider
         setupConcentrationSlider();
 
         // Add toolbar components
-        toolBar.getItems().addAll(btnSimulate, btnStop, btnRearrange, this.concentrationSlider);
+        toolBar.getItems().addAll(btnSimulate, btnStop, btnStep, this.concentrationSlider);
 
         // Add toolbar and menu
         topContainer.getChildren().addAll(menuBar, toolBar);
@@ -250,19 +308,23 @@ public class CellularGraphAutomatonSimulation extends Application {
         }
     }
 
+    private void stepSimulation(ActionEvent event) {
+        initializeSimulationManager();
+        simulation.nextEpoch();
+        simulationManager.emitGraphEvent(simulation);
+        for (AutomatonNode automatonNode : simulation.getObservedNodes()) {
+            simulationManager.emitNodeEvent(simulation, automatonNode);
+        }
+    }
+
     private void initializeSimulationManager() {
         CopyOnWriteArrayList<UpdateEventListener<NodeUpdatedEvent>> nodeListeners = this.simulationManager.getNodeListeners();
         simulationManager = new SimulationManager(simulation);
         simulationManager.setSimulationTerminationToTime(Quantities.getQuantity(1.0, SECOND));
-        simulationManager.setUpdateEmissionToFPS(10);
+        simulationManager.tieUpdateEmissionToFPS(10);
         nodeListeners.forEach(simulationManager::addNodeUpdateListener);
         simulationManager.addGraphUpdateListener(timeIndicator);
         simulationManager.addGraphUpdateListener(simulationCanvas.getRenderer());
-    }
-
-    private void arrangeGraph(ActionEvent event) {
-        logger.debug("Starting rearrangement cycle ...");
-        this.simulationCanvas.getRenderer().arrangeGraph(simulation.getGraph());
     }
 
     private Stage prepareUtilityWindow(int width, int height, String title) {
@@ -357,7 +419,7 @@ public class CellularGraphAutomatonSimulation extends Application {
         FileChooser fileChooser = prepareFileChooser("Save graph to file", "xml");
         File file = fileChooser.showSaveDialog(this.stage);
         if (file != null) {
-            GraphMLExportService.exportGraph(simulation.getGraph(), file);
+//            GraphMLExportService.exportGraph(simulation.getGraph(), file);
         }
     }
 

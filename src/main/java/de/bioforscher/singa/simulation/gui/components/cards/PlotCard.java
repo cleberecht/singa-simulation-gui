@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Paths;
+import java.util.HashSet;
 
 /**
  * @author cl
@@ -38,7 +39,7 @@ public class PlotCard extends GridPane {
     private SimulationManager simulationManager;
 
     private HBox toolBar = new HBox();
-    private ListView<ChemicalEntity<?>> speciesList = new ListView<>();
+    private ListView<ChemicalEntity> speciesList = new ListView<>();
     private MenuButton optionsMenu = new MenuButton("", IconProvider.FontAwesome.createIconLabel(IconProvider.FontAwesome.ICON_COGS));
 
     public PlotCard(SimulationManager simulation, ConcentrationPlot plot) {
@@ -132,7 +133,7 @@ public class PlotCard extends GridPane {
         File directory = directoryChooser.showDialog(StageHelper.getStages().iterator().next());
         if (directory != null) {
             try {
-                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), simulationManager.getSimulation().getChemicalEntities(), simulationManager.getSimulation().getModules());
+                EpochUpdateWriter writer = new EpochUpdateWriter(directory.toPath(), Paths.get("Current Simulation"), new HashSet<>(simulationManager.getSimulation().getChemicalEntities()), simulationManager.getSimulation().getModules());
                 writer.addNodeToObserve(this.plot.getReferencedNode());
                 this.simulationManager.addNodeUpdateListener(writer);
             } catch (IOException e) {
@@ -145,7 +146,7 @@ public class PlotCard extends GridPane {
         return this.plot;
     }
 
-    public ListView<ChemicalEntity<?>> getSpeciesList() {
+    public ListView<ChemicalEntity> getSpeciesList() {
         return this.speciesList;
     }
 }

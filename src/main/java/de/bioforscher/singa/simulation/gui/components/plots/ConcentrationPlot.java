@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Set;
+import java.util.Collection;
 
 import static de.bioforscher.singa.structure.features.molarmass.MolarMass.GRAM_PER_MOLE;
 
@@ -33,14 +33,14 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
 
     private static final Logger logger = LoggerFactory.getLogger(ConcentrationPlot.class);
 
-    private ObservableList<ChemicalEntity<?>> observedEntities = FXCollections.observableArrayList();
+    private ObservableList<ChemicalEntity> observedEntities = FXCollections.observableArrayList();
     private AutomatonNode referencedNode;
 
     private int maximalDataPoints;
     private int tickSpacing;
     private boolean scaleXAxis = false;
 
-    public ConcentrationPlot(Set<ChemicalEntity<?>> observedEntities, AutomatonNode referencedNode) {
+    public ConcentrationPlot(Collection<ChemicalEntity> observedEntities, AutomatonNode referencedNode) {
         super(new NumberAxis(), new NumberAxis());
         logger.debug("Initializing {} for node {} ...", this.getClass().getSimpleName(), referencedNode.getIdentifier());
         this.referencedNode = referencedNode;
@@ -128,7 +128,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
         });
     }
 
-    public void setObservedSpecies(Set<ChemicalEntity<?>> observedSpecies) {
+    public void setObservedSpecies(Collection<ChemicalEntity> observedSpecies) {
         this.observedEntities.addAll(observedSpecies);
     }
 
@@ -198,7 +198,7 @@ public class ConcentrationPlot extends LineChart<Number, Number> implements Upda
 
     }
 
-    public ObservableList<ChemicalEntity<?>> getObservedEntities() {
+    public ObservableList<ChemicalEntity> getObservedEntities() {
         return this.observedEntities;
     }
 

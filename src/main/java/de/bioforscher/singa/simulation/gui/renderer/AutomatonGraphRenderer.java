@@ -19,7 +19,7 @@ import javafx.scene.paint.Color;
 
 import java.util.HashMap;
 
-import static de.bioforscher.singa.simulation.model.compartments.NodeState.MEMBRANE;
+import static de.bioforscher.singa.simulation.model.compartments.CellSectionState.MEMBRANE;
 
 public class AutomatonGraphRenderer extends GraphRenderer<AutomatonNode, AutomatonEdge, RectangularCoordinate, AutomatonGraph>
         implements UpdateEventListener<GraphUpdatedEvent> {

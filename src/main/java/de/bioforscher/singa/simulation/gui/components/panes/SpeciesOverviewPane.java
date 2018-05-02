@@ -1,9 +1,10 @@
 package de.bioforscher.singa.simulation.gui.components.panes;
 
-import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntities;
+
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.entities.ComplexedChemicalEntity;
-import de.bioforscher.singa.chemistry.descriptive.entities.Species;
+import de.bioforscher.singa.chemistry.descriptive.entities.SmallMolecule;
+import de.bioforscher.singa.features.identifiers.SimpleStringIdentifier;
 import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.IconProvider;
 import de.bioforscher.singa.simulation.gui.components.cards.GeneralEntityCard;
@@ -35,14 +36,14 @@ public class SpeciesOverviewPane extends BorderPane {
     private ComboBox<String> cbGrouping;
     private TreeView<String> treeView;
     private TreeItem<String> rootItem;
-    private Map<String, ChemicalEntity<?>> entityMapping;
+    private Map<SimpleStringIdentifier, ChemicalEntity> entityMapping;
     private Map<String, GeneralEntityCard<?>> cardMapping;
 
     private VBox currentDetailView;
 
     public SpeciesOverviewPane(CellularGraphAutomatonSimulation owner) {
         this.owner = owner;
-        this.entityMapping = ChemicalEntities.generateEntityMapFromSet(owner.getSimulation().getChemicalEntities());
+        this.entityMapping = owner.getSimulation().getChemicalEntityMap();
         initializeCards();
         initializeInterface();
         initializeListener();
@@ -50,7 +51,7 @@ public class SpeciesOverviewPane extends BorderPane {
 
     private void initializeCards() {
         this.cardMapping = new HashMap<>();
-        this.entityMapping.forEach((key, value) -> this.cardMapping.put(key, new GeneralEntityCard<>(value)));
+        this.entityMapping.forEach((key, value) -> this.cardMapping.put(key.getIdentifier(), new GeneralEntityCard<>(value)));
     }
 
     private void initializeInterface() {
@@ -113,8 +114,8 @@ public class SpeciesOverviewPane extends BorderPane {
 
     private void fillTreeUnGrouped() {
         this.rootItem.getChildren().clear();
-        for (String identifier : this.entityMapping.keySet()) {
-            TreeItem<String> item = createSpeciesTreeItem(identifier);
+        for (SimpleStringIdentifier identifier : this.entityMapping.keySet()) {
+            TreeItem<String> item = createSpeciesTreeItem(identifier.getIdentifier());
             this.rootItem.getChildren().add(item);
         }
     }
@@ -125,14 +126,14 @@ public class SpeciesOverviewPane extends BorderPane {
                 .filter(module -> module instanceof Reaction)
                 .map(Reaction.class::cast)
                 .forEach(reaction -> {
-                        TreeItem<String> reactionItem = createReactionTreeItem(reaction.getDisplayString());
+                        TreeItem<String> reactionItem = createReactionTreeItem(reaction.getReactionString());
                         this.rootItem.getChildren().add(reactionItem);
                         for (ChemicalEntity entity : reaction.getSubstrates()) {
-                            TreeItem<String> speciesItem = createSpeciesTreeItem(entity.getIdentifier().toString());
+                            TreeItem<String> speciesItem = createSpeciesTreeItem(entity.getIdentifier().getIdentifier());
                             reactionItem.getChildren().add(speciesItem);
                         }
                         for (ChemicalEntity entity : reaction.getProducts()) {
-                            TreeItem<String> speciesItem = createSpeciesTreeItem(entity.getIdentifier().toString());
+                            TreeItem<String> speciesItem = createSpeciesTreeItem(entity.getIdentifier().getIdentifier());
                             reactionItem.getChildren().add(speciesItem);
                         }
 
@@ -149,8 +150,8 @@ public class SpeciesOverviewPane extends BorderPane {
         this.rootItem.getChildren().add(complexItem);
         this.owner.getSimulation().getChemicalEntities()
                 .forEach(entity -> {
-                    TreeItem<String> item = createSpeciesTreeItem(entity.getIdentifier().toString());
-                    if (entity instanceof Species) {
+                    TreeItem<String> item = createSpeciesTreeItem(entity.getIdentifier().getIdentifier());
+                    if (entity instanceof SmallMolecule) {
                         speciesItem.getChildren().add(item);
                     } else if (entity instanceof ComplexedChemicalEntity) {
                         complexItem.getChildren().add(item);
@@ -161,24 +162,20 @@ public class SpeciesOverviewPane extends BorderPane {
     }
 
     private TreeItem<String> createSpeciesTreeItem(String identifyingString) {
-        ChemicalEntity chemicalEntity = this.entityMapping.get(identifyingString);
-        if (chemicalEntity instanceof Species) {
-            return new TreeItem<>(composeTreeName(chemicalEntity),
+        ChemicalEntity chemicalEntity = this.entityMapping.get(new SimpleStringIdentifier(identifyingString));
+        if (chemicalEntity instanceof SmallMolecule) {
+            return new TreeItem<>(chemicalEntity.getIdentifier().getIdentifier(),
                     new ImageView(IconProvider.MOLECULE_ICON_IMAGE));
         } else if (chemicalEntity instanceof ComplexedChemicalEntity) {
-            TreeItem<String> complex = new TreeItem<>(composeTreeName(chemicalEntity),
+            TreeItem<String> complex = new TreeItem<>(chemicalEntity.getIdentifier().getIdentifier(),
                     new ImageView(IconProvider.COMPLEX_ICON_IMAGE));
             ((ComplexedChemicalEntity) chemicalEntity).getAssociatedChemicalEntities().forEach(associated ->
-                    complex.getChildren().add(createSpeciesTreeItem(composeTreeName(chemicalEntity))));
+                    complex.getChildren().add(createSpeciesTreeItem(chemicalEntity.getIdentifier().getIdentifier())));
             return complex;
         } else {
             return new TreeItem<>(chemicalEntity.getIdentifier().toString(),
                     new ImageView(IconProvider.PROTEIN_ICON_IMAGE));
         }
-    }
-
-    private String composeTreeName(ChemicalEntity entity) {
-        return entity.getName() + " (" + entity.getIdentifier().toString() + ")";
     }
 
     private TreeItem<String> createReactionTreeItem(String identifyingString) {

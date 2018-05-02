@@ -14,7 +14,7 @@ import javafx.scene.text.FontWeight;
 /**
  * @author cl
  */
-public class ColoredEntityCell extends ListCell<ChemicalEntity<?>> {
+public class ColoredEntityCell extends ListCell<ChemicalEntity> {
 
     private ConcentrationPlot plot;
 

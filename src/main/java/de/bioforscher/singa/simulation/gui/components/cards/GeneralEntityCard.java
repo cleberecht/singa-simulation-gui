@@ -3,8 +3,9 @@ package de.bioforscher.singa.simulation.gui.components.cards;
 import de.bioforscher.singa.chemistry.descriptive.annotations.Annotation;
 import de.bioforscher.singa.chemistry.descriptive.entities.ChemicalEntity;
 import de.bioforscher.singa.chemistry.descriptive.features.databases.chebi.ChEBIImageService;
-import de.bioforscher.singa.core.identifier.ChEBIIdentifier;
-import de.bioforscher.singa.core.identifier.model.Identifier;
+import de.bioforscher.singa.features.identifiers.ChEBIIdentifier;
+import de.bioforscher.singa.features.identifiers.SimpleStringIdentifier;
+import de.bioforscher.singa.features.identifiers.model.Identifier;
 import de.bioforscher.singa.structure.features.molarmass.MolarMass;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -22,7 +23,7 @@ import java.util.List;
 /**
  * @author cl
  */
-public class GeneralEntityCard<EntityType extends ChemicalEntity<?>> extends GridPane {
+public class GeneralEntityCard<EntityType extends ChemicalEntity> extends GridPane {
 
     private EntityType chemicalEntity;
 
@@ -66,12 +67,12 @@ public class GeneralEntityCard<EntityType extends ChemicalEntity<?>> extends Gri
 
     private void configureImageView() {
         if (ChEBIIdentifier.PATTERN.matcher(this.chemicalEntity.getIdentifier().toString()).matches()) {
-            this.imageView = new ImageView(retrieveImage(this.chemicalEntity.getIdentifier()));
+            this.imageView = new ImageView(retrieveImage(this.chemicalEntity.getIdentifier().getIdentifier()));
             return;
         } else {
             for (Identifier identifier : this.chemicalEntity.getAdditionalIdentifiers()) {
                 if (ChEBIIdentifier.PATTERN.matcher(identifier.toString()).matches()) {
-                    this.imageView = new ImageView(retrieveImage(identifier));
+                    this.imageView = new ImageView(retrieveImage(identifier.getIdentifier()));
                     return;
                 }
             }
@@ -79,8 +80,8 @@ public class GeneralEntityCard<EntityType extends ChemicalEntity<?>> extends Gri
         this.imageView = new ImageView();
     }
 
-    private Image retrieveImage(Identifier identifier) {
-        ChEBIImageService imageService = new ChEBIImageService(identifier.toString());
+    private Image retrieveImage(String identifier) {
+        ChEBIImageService imageService = new ChEBIImageService(identifier);
         return new Image(imageService.parse());
     }
 
@@ -89,7 +90,7 @@ public class GeneralEntityCard<EntityType extends ChemicalEntity<?>> extends Gri
         this.primaryName.setFont(Font.font(null, FontWeight.BOLD, 16));
     }
 
-    private void configurePrimaryIdentifier(Identifier primaryIdentifier) {
+    private void configurePrimaryIdentifier(SimpleStringIdentifier primaryIdentifier) {
         this.primaryIdentifier.setText(primaryIdentifier.toString());
     }
 

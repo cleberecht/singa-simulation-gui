@@ -3,7 +3,7 @@ package de.bioforscher.singa.simulation.gui.components.menus;
 import de.bioforscher.singa.simulation.gui.CellularGraphAutomatonSimulation;
 import de.bioforscher.singa.simulation.gui.components.cards.PlotCard;
 import de.bioforscher.singa.simulation.gui.components.plots.ConcentrationPlot;
-import de.bioforscher.singa.simulation.model.compartments.NodeState;
+import de.bioforscher.singa.simulation.model.compartments.CellSectionState;
 import de.bioforscher.singa.simulation.model.graphs.AutomatonNode;
 import javafx.event.ActionEvent;
 import javafx.scene.control.*;
@@ -54,13 +54,13 @@ public class AutomatonNodeContextMenu extends ContextMenu {
         this.stateMenu = new Menu("Set State...");
         this.stateGroup = new ToggleGroup();
         // add menuItem for every state
-        for (NodeState state: NodeState.values()) {
+        for (CellSectionState state: CellSectionState.values()) {
             RadioMenuItem stateItem = setupStateMenuItem(state);
             this.stateMenu.getItems().add(stateItem);
         }
     }
 
-    private RadioMenuItem setupStateMenuItem(final NodeState state) {
+    private RadioMenuItem setupStateMenuItem(final CellSectionState state) {
         RadioMenuItem itemCompound = new RadioMenuItem();
         itemCompound.setText(state.name());
         itemCompound.setUserData(state);
@@ -88,7 +88,7 @@ public class AutomatonNodeContextMenu extends ContextMenu {
     }
 
     private void setState(ActionEvent event) {
-        this.node.setState(((NodeState)((RadioMenuItem)event.getSource()).getUserData()));
+        this.node.setState(((CellSectionState)((RadioMenuItem)event.getSource()).getUserData()));
         this.owner.redrawGraph();
     }
 
