@@ -80,7 +80,7 @@ public class AutomatonNodeContextMenu extends ContextMenu {
     }
 
     private void observeNode(ActionEvent event) {
-        this.node.setObserved(true);
+        owner.getSimulation().observeNode(node);
         ConcentrationPlot plot = new ConcentrationPlot(this.owner.getSimulationManager().getSimulation().getChemicalEntities(), this.node);
         this.owner.getSimulationManager().addNodeUpdateListener(plot);
         this.owner.getPlotControlPanel().getPlotCards().add(new PlotCard(this.owner.getSimulationManager(), plot));
